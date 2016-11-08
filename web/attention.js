@@ -221,12 +221,12 @@ d3.json("vis.json", (error, data) => {
     var show = (im, cur) => {
         cur = 0;
         atten.show(all_data[im]);
-        start(im);
+
     };
-    d3.select("#im2latexbuttons").insert("a", ":first-child").text("next").on("click", () => { im++; show(im);  return false;} );
-    d3.select("#im2latexbuttons").insert("a", ":first-child").text("last").on("click", () => { im--; show(im);  return false;} );
+    d3.select("#im2latexbuttons").insert("a", ":first-child").text("next").on("click", () => { im++; show(im);          start(im);return false;} );
+    d3.select("#im2latexbuttons").insert("a", ":first-child").text("last").on("click", () => { im--; show(im);          start(im);return false;} );
     show(im);
-    
+        start(im);    
     function start(myim) {
         setInterval(() => { cur++;
                             atten.renderText(cur);
