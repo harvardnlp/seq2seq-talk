@@ -1,0 +1,22 @@
+.latex.active {
+    font-size: 80px;
+}
+
+.latex.passive  {
+    font-weight: normal;
+    font-size: 25px;
+}
+
+.latex_pointer {
+    opacity: 0.6;
+    stroke: grey;
+}
+
+.latex_pointer.blank {
+    display: none;
+}
+
+.grid_line {
+    opacity: 0.1;
+    stroke: grey;
+}

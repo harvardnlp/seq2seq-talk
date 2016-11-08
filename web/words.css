@@ -1,0 +1,16 @@
+.dots .marked {
+    fill: red;
+    font-weight: bold;
+    
+    
+}
+
+.dots .fade {
+    opacity: 0.05;    
+}
+
+.dots  {
+    fill: black;
+    font-style: "sans-serif";
+    font-size: 5px;
+}
