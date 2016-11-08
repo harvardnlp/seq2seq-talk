@@ -209,27 +209,32 @@ class Attention {
 }
 
 
-
+var cur = 0;
 d3.json("vis.json", (error, data) => {
     all_data = data;
     var im = 10;
-    var cur = 0;
+
     var atten = new Attention("#im2latex");
 
 
     
     var show = (im, cur) => {
-        atten.show(all_data[im]);
         cur = 0;
-    
+        atten.show(all_data[im]);
+        start(im);
     };
-    d3.select("#im2latexbuttons").insert("a", ":first-child").text("next").on("click", () => { im++; show(im); return false;} );
-    d3.select("#im2latexbuttons").insert("a", ":first-child").text("last").on("click", () => { im--; show(im); return false;} );
+    d3.select("#im2latexbuttons").insert("a", ":first-child").text("next").on("click", () => { im++; show(im);  return false;} );
+    d3.select("#im2latexbuttons").insert("a", ":first-child").text("last").on("click", () => { im--; show(im);  return false;} );
     show(im);
-    setInterval(() => { cur++;
-                        atten.renderText(cur);
-                        atten.renderHeatMap(cur);},
-                500);
+    
+    function start(myim) {
+        setInterval(() => { cur++;
+                            atten.renderText(cur);
+                            atten.renderHeatMap(cur);
+                            return myim == im;
+                          },
+                    500);
+    }
 
 });
 
