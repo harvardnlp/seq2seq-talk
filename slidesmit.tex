@@ -5,8 +5,8 @@
 \let\temptwo\enditemize
 \renewenvironment{itemize}{\tempone\addtolength{\itemsep}{0.5\baselineskip}}{\temptwo}
 \usepackage{beamerthemeshadow}
-\usepackage{ulem}
 \usepackage{tikz}
+\usepackage{bbm}
 \usepackage{multimedia}
 \usepackage{hyperref}
 \usepackage{natbib}
@@ -95,7 +95,7 @@
 
 \newcommand{\ha}{\boldh_{\ua}}
 \newcommand{\hp}{\boldh_{\up}}
-\newcommand{\hc}{\boldh_{\mathrm{c}}}
+% \newcommand{\hc}{\boldh_{\mathrm{c}}}
 
 
 \def\kargmax{\operatornamewithlimits{K-arg\,max}}
@@ -250,13 +250,10 @@
   \item Conversation \Cite{Vinyals2015} \Cite{Serban2016}
   \item Parsing \Cite{vinyals15grammar}
   \item Speech \Cite{Chorowski2015,Chan2015}
-  \item Sentence Compression \Cite{filippova15sentence}
-  \item Speech \Cite{Chorowski2015}
-  \item Summarization \Cite{Rush2015} 
-  \item Caption Generation \Cite{karpathy2015deep,Xu2015}
-  \item Caption Generation \Cite{Xu2015,Vinyals2015b}
+  \item Caption Generation \Cite{karpathy2015deep,Xu2015,Vinyals2015b}
   \item Video-Generation \Cite{Srivastava2015a}
   \item NER/POS-Tagging \Cite{Gillick2016}
+  \item Summarization \Cite{Rush2015} 
     \air 
 
   \end{itemize}
@@ -318,9 +315,10 @@
 
 \begin{frame}
   \begin{center}
-    \movie[width=\textwidth, height=\textheight, poster]{Word
-      Vectors}{WordVecs.mp4}
-  \end{center}
+    \includegraphics[height=0.9\textheight]{graph}
+
+    \url{http://harvardnlp.github.io/seq2seq-talk/web/wordvecs.html}
+   \end{center}
 \end{frame}
 
 
@@ -406,9 +404,6 @@
     \includegraphics[width=0.9\textwidth]{systran}
   \end{center}
 
-  \begin{itemize}
-
-  \end{itemize}
 \end{frame}
 
 
@@ -480,14 +475,17 @@ age . }
   
   \air 
 
-  \movie[width=\textwidth, height=4cm, poster, repeat]{\includegraphics[width=\textwidth]{math}}{Latex.mp4}
+  \begin{center}
+    \includegraphics[width=\textwidth]{math}
+  \end{center}
+  % \movie[width=\textwidth, height=4cm, poster, repeat]{}{Latex.mp4}
   
 
 
   \begin{figure}
     \centering
   \end{figure}
-  \centerline{\href{http://localhost:8900/}{[Latex Example]}}
+  \centerline{\href{https://harvardnlp.github.io/seq2seq-talk/web/math.html}{[Latex Example]}}
 \end{frame}
 
 
@@ -1574,11 +1572,9 @@ $$ \hat{y} \approx  \argmax_{w_{1:T}} q(w_{1:T} \given x) $$
 \pause
 % Empirically, point estimate captures significant mass \\
 % (Other approximations possible)
-\\
-\\
+
 Simple model: train the student model on $\hat{y}$ with NLL
 \end{frame}
-
 
 
 \begin{frame}
@@ -1672,8 +1668,9 @@ Student  $\,$   & $14.7$ & $-$ & $17.6$&  $-$ &   $8.2$ & $0.9\%$  \\
 \begin{frame}
 \centerline{\structure{An Application}}
 \begin{center}
-    \movie[width=5cm, height=0.9\textheight, poster, repeat]{\includegraphics[width=5cm]{phonemt}}{transfast.mp4}
+\includegraphics[width=5cm]{phonemt}
   \end{center}
+
 \end{frame}
 
 
@@ -1705,7 +1702,7 @@ Student  $\,$   & $14.7$ & $-$ & $17.6$&  $-$ &   $8.2$ & $0.9\%$  \\
 \begin{frame}[t,allowframebreaks]
   \frametitle{References}
   \begin{small}
-    \bibliography{full,career2,seq2seqapps,ourwork,master}
+    \bibliography{full,career2,seq2seqapps,ourwork,master,masterseqk,beamtrain}
   \end{small}
  \end{frame}
 
