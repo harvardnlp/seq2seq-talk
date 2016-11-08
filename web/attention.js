@@ -232,3 +232,6 @@ d3.json("vis.json", (error, data) => {
                 500);
 
 });
+
+var width = 1300;
+var height = 700;
