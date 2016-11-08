@@ -1,0 +1,371 @@
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+<link rel="stylesheet" type="text/css" href="attention.css">
+<link rel="stylesheet" type="text/css" href="words.css">
+<style>
+
+  .axis line,
+  .axis path {
+  fill: none;
+  stroke: #676767;
+  shape-rendering: crispEdges;
+  }
+  .brush .extent {
+  stroke: #3fb391;
+  stroke-width: 2;
+  fill: none;
+  rx:2;
+  ry:2;
+  /*fill-opacity: .25;*/
+  /*shape-rendering: crispEdges;*/
+  }
+  .overlayBrushAreaZero rect{
+  stroke: none;
+  fill: #3fb391;
+  fill-opacity: .25;
+  }
+  .brush_zero .extent {
+  fill-opacity: .3;
+  stroke: white;
+  fill: #b3b3b3;
+  shape-rendering: crispEdges;
+  }
+  .svg_button .bg {
+  fill: #ececec;
+  /*stroke: #676767;*/
+  /*stroke-width: 1;*/
+  }
+  .svg_button .bg:hover {
+  fill: #1399e4;
+  opacity: .3;
+  }
+  .svg_button text, .svg_select_button .label_text {
+  fill: #676767;
+  stroke: none;
+  /*font-weight: bold;*/
+  text-anchor: middle;
+  pointer-events: none;
+  }
+  .svg_select_button text {
+  fill: #676767;
+  stroke: none;
+  }
+  .svg_select_button .selector {
+  font-family: FontAwesome, sans-serif;
+  cursor: pointer;
+  }
+  .svg_radio_button rect {
+  fill: #ececec;
+  }
+  .svg_radio_button rect:hover {
+  stroke: #1399e4;
+  opacity: .3;
+  }
+  .svg_radio_button.selected rect {
+  fill: #1399e4;
+  opacity: .5;
+  }
+  .svg_radio_button text {
+  fill: #676767;
+  stroke: none;
+  text-anchor: middle;
+  pointer-events: none;
+  {#            font-weight: bold;#}
+  }
+  .pc_line {
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
+  /*shape-rendering: crispEdges;*/
+  }
+  .pc_line_overlay {
+  stroke: #3399b2;
+  stroke-width: 2;
+  fill: none;
+  }
+  .pc_line_overlay.deselected {
+  stroke: #b3b3b3;
+  stroke-width: 1;
+  fill: none;
+  }
+  .pc_line_discrete {
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
+  opacity: .3;
+  }
+  .pc_line.hover, .pc_line_overlay.hover, .pc_line_discrete.hover {
+  stroke-width: 5;
+  stroke: #ff4b33;
+  }
+  .brush_indicator {
+  stroke: #3fb391;
+  stroke-width: 3;
+  stroke-dasharray: 2, 1;
+  fill: none;
+  }
+  .noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+  not supported by any browser */
+  }
+  .word {
+  font-size: 14pt;
+  <!-- pointer-events: none; -->
+  text-anchor: start;
+  }
+  .query_phrase {
+  font-weight: bold;
+  fill: #349576;
+  }
+  .slider_group .handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1.25px;
+  cursor: crosshair;
+  }
+  .slider_group text {
+  font-size: 9pt;
+  pointer-events: none;
+  }
+  .threshold_line {
+  fill: none;
+  stroke-width: 1;
+  stroke-dasharray: 3, 1;
+  stroke: #ff4b33;
+  }
+  /*HEATMAPS*/
+  .hm-tooltip {
+  pointer-events: none;
+  }
+  .hm-tooltip rect {
+  fill: black;
+  fill-opacity: .5;
+  }
+  .hm-tooltip text {
+  fill: white;
+  font-weight: bold;
+  font-size: 12pt;
+  text-anchor: middle;
+  }
+  .mapping_panel {
+  cursor: crosshair;
+  }
+  .mapping_panel rect {
+  stroke: black;
+  fill: white;
+  opacity: .3;
+  }
+  .mapping_panel rect.selected {
+  stroke: black;
+  stroke-width: 2;
+  fill: white;
+  opacity: 1;
+  }
+  .mapping_panel rect:hover, .mapping_panel circle:hover, .mapping_panel .setup-icon:hover {
+  opacity: .8;
+  }
+  .mapping_panel circle {
+  fill: darkgray;
+  stroke: none;
+  opacity: .7;
+  pointer-events: none;
+  }
+  .mapping_panel .setup-icon {
+  font-family: FontAwesome, sans-serif;
+  font-size: 12px;
+  fill: black;
+  opacity: .5;
+  }
+  .hmCell, .wordGroup {
+  cursor: crosshair;
+  }
+  .hmCell.hovered {
+  stroke: red;
+  stroke-width: 2;
+  }
+  .background_rect.hovered {
+  stroke: red;
+  stroke-width: 2;
+  }
+  .cell_selector rect {
+  fill: #b3b3b3;
+  stroke: white;
+  }
+  .cell_selector.selected rect {
+  fill: #1399e4;
+  stroke: #1399e4;
+  }
+  .cell_selector.hover rect {
+  fill: #ff4b33;
+  }
+  .pc_area_discrete {
+  fill: #3399b2;
+  stroke: #b3b3b3;
+  }
+  .cell_length_line {
+  stroke: #676767;
+  stroke-width: 2px;
+  }
+  .cell_length_line.deselected {
+  stroke: #d4d5ce;
+  }
+  .cell_length_line.hover {
+  stroke: #ff4b33;
+  stroke-width: 3px;
+  }
+  .navigation_button {
+  font-family: FontAwesome, sans-serif;
+  font-size: 18px;
+  fill: black;
+  opacity: .5;
+  cursor: pointer;
+  }
+  .brush_handles, .result_link {
+  font-family: FontAwesome, sans-serif;
+  font-size: 12px;
+  fill: black;
+  opacity: .5;
+  /*pointer-events: none;*/
+  cursor: crosshair;
+  }
+  .separator_line {
+  stroke: #2d57b2;
+  stroke-width: 3px;
+  }
+  .histogram_fuzzy {
+  fill: #3fb391;
+  stroke: none;
+  opacity: .3;
+  pointer-events: none;
+  }
+  .histogram_strict {
+  fill: #3fb391;
+  stroke: none;
+  pointer-events: none;
+  }
+  .histogram_bg {
+  opacity: 0;
+  fill: white;
+  stroke: #349576;
+  }
+  .histogram_bg:hover {
+  opacity: .5;
+  }
+  .histogram_bg.selected {
+  opacity: .5;
+  fill: grey;
+  }
+  .result_histogram .label_text {
+  pointer-events: none;
+  fill: grey;
+  font-size: 12px;
+  }
+  .result_histogram_name {
+  text-anchor: end;
+  stroke: none;
+  fill: #676767;
+  }
+  .wordBG{
+  opacity: .9;
+  pointer-events: none;
+  }
+      </style>
+
+<style>
+
+@import url(http://fonts.googleapis.com/css?family=Roboto|Roboto:b|Roboto:i);
+
+section {
+  background: #fff;
+  color: #000;
+  padding: 2em;
+  font-family: "Roboto", Baskerville, Georgia;
+}
+
+#follow {
+  background: none;
+}
+
+.grey {
+  color: #777;
+}
+
+a:link,
+a:visited {
+  color: blue;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+.tree {
+    font-size: 14px;
+    text-align: center;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+.word, .tag, .dependency {
+    text-anchor: middle;
+}
+.word {
+    fill: #555;
+    cursor: default;
+}
+.tag {
+    fill: blue;
+    font-size: .9em;
+}
+.edge, .arrow {
+    fill: none;
+    stroke: black;
+    stroke-width: 1.5;
+}
+.dependency {
+    fill: #black;
+    font-size: 30px;
+}
+
+.dependency.active {
+    fill: #3276b1;
+}
+.word.active, .edge.active, .arrow.active {
+   stroke: #3276b1;
+}
+.word:hover {
+   stroke: #3276b1;
+}
+
+.word.w0 {
+    fill: #ccc;
+}
+.word {
+    font-size: 45px;
+}
+
+
+</style>
+    <div id="im2latexbuttons">
+  </div>
+
+<svg id="im2latex"></svg>
+
+
+
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/lodash/dist/lodash.min.js"></script>
+<script src="d3.v3.js"></script>
+<script src="words.js"></script>
+
+

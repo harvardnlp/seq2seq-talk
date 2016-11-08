@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+<link rel="stylesheet" type="text/css" href="attention.css">
+<link rel="stylesheet" type="text/css" href="words.css">
+<style>
+
+  .axis line,
+  .axis path {
+  fill: none;
+  stroke: #676767;
+  shape-rendering: crispEdges;
+  }
+  .brush .extent {
+  stroke: #3fb391;
+  stroke-width: 2;
+  fill: none;
+  rx:2;
+  ry:2;
+  /*fill-opacity: .25;*/
+  /*shape-rendering: crispEdges;*/
+  }
+  .overlayBrushAreaZero rect{
+  stroke: none;
+  fill: #3fb391;
+  fill-opacity: .25;
+  }
+  .brush_zero .extent {
+  fill-opacity: .3;
+  stroke: white;
+  fill: #b3b3b3;
+  shape-rendering: crispEdges;
+  }
+  .svg_button .bg {
+  fill: #ececec;
+  /*stroke: #676767;*/
+  /*stroke-width: 1;*/
+  }
+  .svg_button .bg:hover {
+  fill: #1399e4;
+  opacity: .3;
+  }
+  .svg_button text, .svg_select_button .label_text {
+  fill: #676767;
+  stroke: none;
+  /*font-weight: bold;*/
+  text-anchor: middle;
+  pointer-events: none;
+  }
+  .svg_select_button text {
+  fill: #676767;
+  stroke: none;
+  }
+  .svg_select_button .selector {
+  font-family: FontAwesome, sans-serif;
+  cursor: pointer;
+  }
+  .svg_radio_button rect {
+  fill: #ececec;
+  }
+  .svg_radio_button rect:hover {
+  stroke: #1399e4;
+  opacity: .3;
+  }
+  .svg_radio_button.selected rect {
+  fill: #1399e4;
+  opacity: .5;
+  }
+  .svg_radio_button text {
+  fill: #676767;
+  stroke: none;
+  text-anchor: middle;
+  pointer-events: none;
+  {#            font-weight: bold;#}
+  }
+  .pc_line {
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
+  /*shape-rendering: crispEdges;*/
+  }
+  .pc_line_overlay {
+  stroke: #3399b2;
+  stroke-width: 2;
+  fill: none;
+  }
+  .pc_line_overlay.deselected {
+  stroke: #b3b3b3;
+  stroke-width: 1;
+  fill: none;
+  }
+  .pc_line_discrete {
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
+  opacity: .3;
+  }
+  .pc_line.hover, .pc_line_overlay.hover, .pc_line_discrete.hover {
+  stroke-width: 5;
+  stroke: #ff4b33;
+  }
+  .brush_indicator {
+  stroke: #3fb391;
+  stroke-width: 3;
+  stroke-dasharray: 2, 1;
+  fill: none;
+  }
+  .noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+  not supported by any browser */
+  }
+  .word {
+  font-size: 14pt;
+  <!-- pointer-events: none; -->
+  text-anchor: start;
+  }
+  .query_phrase {
+  font-weight: bold;
+  fill: #349576;
+  }
+  .slider_group .handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1.25px;
+  cursor: crosshair;
+  }
+  .slider_group text {
+  font-size: 9pt;
+  pointer-events: none;
+  }
+  .threshold_line {
+  fill: none;
+  stroke-width: 1;
+  stroke-dasharray: 3, 1;
+  stroke: #ff4b33;
+  }
+  /*HEATMAPS*/
+  .hm-tooltip {
+  pointer-events: none;
+  }
+  .hm-tooltip rect {
+  fill: black;
+  fill-opacity: .5;
+  }
+  .hm-tooltip text {
+  fill: white;
+  font-weight: bold;
+  font-size: 12pt;
+  text-anchor: middle;
+  }
+  .mapping_panel {
+  cursor: crosshair;
+  }
+  .mapping_panel rect {
+  stroke: black;
+  fill: white;
+  opacity: .3;
+  }
+  .mapping_panel rect.selected {
+  stroke: black;
+  stroke-width: 2;
+  fill: white;
+  opacity: 1;
+  }
+  .mapping_panel rect:hover, .mapping_panel circle:hover, .mapping_panel .setup-icon:hover {
+  opacity: .8;
+  }
+  .mapping_panel circle {
+  fill: darkgray;
+  stroke: none;
+  opacity: .7;
+  pointer-events: none;
+  }
+  .mapping_panel .setup-icon {
+  font-family: FontAwesome, sans-serif;
+  font-size: 12px;
+  fill: black;
+  opacity: .5;
+  }
+  .hmCell, .wordGroup {
+  cursor: crosshair;
+  }
+  .hmCell.hovered {
+  stroke: red;
+  stroke-width: 2;
+  }
+  .background_rect.hovered {
+  stroke: red;
+  stroke-width: 2;
+  }
+  .cell_selector rect {
+  fill: #b3b3b3;
+  stroke: white;
+  }
+  .cell_selector.selected rect {
+  fill: #1399e4;
+  stroke: #1399e4;
+  }
+  .cell_selector.hover rect {
+  fill: #ff4b33;
+  }
+  .pc_area_discrete {
+  fill: #3399b2;
+  stroke: #b3b3b3;
+  }
+  .cell_length_line {
+  stroke: #676767;
+  stroke-width: 2px;
+  }
+  .cell_length_line.deselected {
+  stroke: #d4d5ce;
+  }
+  .cell_length_line.hover {
+  stroke: #ff4b33;
+  stroke-width: 3px;
+  }
+  .navigation_button {
+  font-family: FontAwesome, sans-serif;
+  font-size: 18px;
+  fill: black;
+  opacity: .5;
+  cursor: pointer;
+  }
+  .brush_handles, .result_link {
+  font-family: FontAwesome, sans-serif;
+  font-size: 12px;
+  fill: black;
+  opacity: .5;
+  /*pointer-events: none;*/
+  cursor: crosshair;
+  }
+  .separator_line {
+  stroke: #2d57b2;
+  stroke-width: 3px;
+  }
+  .histogram_fuzzy {
+  fill: #3fb391;
+  stroke: none;
+  opacity: .3;
+  pointer-events: none;
+  }
+  .histogram_strict {
+  fill: #3fb391;
+  stroke: none;
+  pointer-events: none;
+  }
+  .histogram_bg {
+  opacity: 0;
+  fill: white;
+  stroke: #349576;
+  }
+  .histogram_bg:hover {
+  opacity: .5;
+  }
+  .histogram_bg.selected {
+  opacity: .5;
+  fill: grey;
+  }
+  .result_histogram .label_text {
+  pointer-events: none;
+  fill: grey;
+  font-size: 12px;
+  }
+  .result_histogram_name {
+  text-anchor: end;
+  stroke: none;
+  fill: #676767;
+  }
+  .wordBG{
+  opacity: .9;
+  pointer-events: none;
+  }
+      </style>
+
+<style>
+
+@import url(http://fonts.googleapis.com/css?family=Roboto|Roboto:b|Roboto:i);
+
+section {
+  background: #fff;
+  color: #000;
+  padding: 2em;
+  font-family: "Roboto", Baskerville, Georgia;
+}
+
+#follow {
+  background: none;
+}
+
+.grey {
+  color: #777;
+}
+
+a:link,
+a:visited {
+  color: blue;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+.tree {
+    font-size: 14px;
+    text-align: center;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+.word, .tag, .dependency {
+    text-anchor: middle;
+}
+.word {
+    fill: #555;
+    cursor: default;
+}
+.tag {
+    fill: blue;
+    font-size: .9em;
+}
+.edge, .arrow {
+    fill: none;
+    stroke: black;
+    stroke-width: 1.5;
+}
+.dependency {
+    fill: #black;
+    font-size: 30px;
+}
+
+.dependency.active {
+    fill: #3276b1;
+}
+.word.active, .edge.active, .arrow.active {
+   stroke: #3276b1;
+}
+.word:hover {
+   stroke: #3276b1;
+}
+
+.word.w0 {
+    fill: #ccc;
+}
+.word {
+    font-size: 45px;
+}
+
+
+</style>
+<section>
+    <div id="im2latexbuttons">
+  </div>
+
+<svg id="im2latex"></svg>
+</section>
+<!-- <section style="text-align:center;padding-top:5em;"> -->
+<!--   <p style="font-size:120%;"><b><a>Machine Generation of Text </a></b>  -->
+<!--   <p style="font-size:100%;"><b><a href="https://nlp.seas.harvard.edu">Alexander Rush</a></b>  -->
+<!--   <p style="font-size:100%;"><b><a href="https://twitter.com/harvardnlp">@harvardnlp</a></b>  -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center;padding-top:5em;" > -->
+<!--     <h3>@DeepDrumpf</h3> -->
+<!-- <center><blockquote  class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">I always was with guns, but I still hate to see what&#39;s happening. Now we have to protect with different things. Fully nuclear weapons. <a href="https://twitter.com/hashtag/2A?src=hash">#2A</a></p>&mdash; DeepDrumpf (@DeepDrumpf) <a href="https://twitter.com/DeepDrumpf/status/742795930374680576">June 14, 2016</a></blockquote> -->
+<!-- <script async src="//platform.twitter.com/widgets.js?width=400" charset="utf-8"></script></center> -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center;padding-top:5em;" > -->
+<!--     <h3>@DeepDrumpf</h3> -->
+<!-- <center> -->
+
+<!--   <blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">[A good result would be] declaring <a href="https://twitter.com/HillaryClinton">@HillaryClinton</a> the big loser of the night. I thought it was clear, but you know, I know what I&#39;m running</p>&mdash; DeepDrumpf (@DeepDrumpf) <a href="https://twitter.com/DeepDrumpf/status/735896625571319809">May 26, 2016</a></blockquote> -->
+<!--   <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script> -->
+<!-- </center> -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center;padding-top:5em;"> -->
+<!--   <h3>@DeepDrumpf</h3> -->
+<!--   <center> -->
+<!-- <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">[Iraq is Harvard for terrorists.]Somebody said &#39;oh, that&#39;s crass.&#39; It&#39;s not crass. We&#39;ve got nothing but problems. By far, Trump is the best</p>&mdash; DeepDrumpf (@DeepDrumpf) <a href="https://twitter.com/DeepDrumpf/status/750714219268599808">July 6, 2016</a></blockquote></center> -->
+<!-- <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script> -->
+<!-- </center> -->
+<!-- </section> -->
+
+
+
+
+<!-- <\!-- <section> -\-> -->
+<!-- <\!-- <div style="text-align:center"> -\-> -->
+<!-- <\!-- <img src="https://img.washingtonpost.com/pb/resources/img/twp-masthead-415x57.svg"/> -\-> -->
+<!-- <\!-- </div> -\-> -->
+
+<!-- <\!-- </section> -\-> -->
+
+<!-- <\!-- <section> -\-> -->
+<!-- <\!-- <div style="text-align:center"> -\-> -->
+<!-- <\!-- <img src="https://img.washingtonpost.com/pb/resources/img/twp-masthead-415x57.svg"/> -\-> -->
+<!-- <\!-- <div> -\-> -->
+<!-- <\!-- <img width="200px" src="http://careers.washingtonpost.com/img/headshot-marty.png"> -\-> -->
+<!-- <\!-- </div> -\-> -->
+<!-- <\!-- </div> -\-> -->
+
+<!-- <\!-- </section> -\-> -->
+
+<!-- <\!-- <section> -\-> -->
+<!-- <\!-- <div style="text-align:center"> -\-> -->
+<!-- <\!-- <img src="https://img.washingtonpost.com/pb/resources/img/twp-masthead-415x57.svg"/> -\-> -->
+<!-- <\!-- <div> -\-> -->
+<!-- <\!-- <img width="200px" src="http://careers.washingtonpost.com/img/headshot-marty.png"> -\-> -->
+<!-- <\!-- <img width="200px" src="https://pbs.twimg.com/profile_images/776115856585678848/P4s1nx_z.jpg"> -\-> -->
+<!-- <\!-- </div> -\-> -->
+<!-- <\!-- </div> -\-> -->
+
+
+<!-- <\!-- </section> -\-> -->
+
+<!-- <\!-- <section> -\-> -->
+<!-- <\!-- <div style="text-align:center"> -\-> -->
+<!-- <\!-- <img src="https://img.washingtonpost.com/pb/resources/img/twp-masthead-415x57.svg"/> -\-> -->
+<!-- <\!-- <div> -\-> -->
+<!-- <\!-- <img width="200px" src="http://careers.washingtonpost.com/img/headshot-marty.png"> -\-> -->
+<!-- <\!-- <img width="200px" src="https://pbs.twimg.com/profile_images/776115856585678848/P4s1nx_z.jpg"> -\-> -->
+<!-- <\!-- </div> -\-> -->
+<!-- <\!-- </div> -\-> -->
+
+<!-- <\!-- <div style="text-align:center"> -\-> -->
+<!-- <\!-- <img src="http://www.thinkmate.com//thumb/?g=09/9684-0021.png"> -\-> -->
+<!-- <\!-- </div> -\-> -->
+
+<!-- <\!-- </section> -\-> -->
+
+
+<!-- <\!-- <section> -\-> -->
+<!-- <\!-- <div style="text-align:center"> -\-> -->
+<!-- <\!-- <img src="https://img.washingtonpost.com/pb/resources/img/twp-masthead-415x57.svg"/> -\-> -->
+<!-- <\!-- </div> -\-> -->
+<!-- <\!-- <div style="font-size:80%; padding-right:100px; padding-left:100px; line-height: 1.3em;" > -\-> -->
+<!-- <\!-- <p>WASHINGTON (AP) — President Bush on Tuesday nominated two individuals to replace retiring jurists on federal courts in the Washington area. -\-> -->
+<!-- <\!-- <p> -\-> -->
+<!-- <\!-- Bush nominated Jennifer M. Anderson for a 15-year term as associate judge of the Superior Court of the District of Columbia, replacing Steffen W. Graae. Anderson, who was born in Dublin, Ireland, currently is chief of the homicide and major crimes section of the U.S. Attorney's office for the District of Columbia. In the late 1990s she was a special prosecutor in the civil rights division of the Justice Department. -\-> -->
+<!-- <\!-- <p> -\-> -->
+<!-- <\!-- Bush also nominated A. Noel Anketell Kramer for a 15-year term as associate judge of the District of Columbia Court of Appeals, replacing John Montague Steadman. Kramer, a native of Bay City, Mich., has been an associate judge on the Superior Court of the District of Columbia since 1984. Before that he was an assistant U.S. attorney in the U.S. Attorney's Office for the District of Columbia. -\-> -->
+<!-- <\!-- <p> -\-> -->
+<!-- <\!-- The nominations must be approved by the Senate.</p> -\-> -->
+<!-- <\!-- </div> -\-> -->
+<!-- <\!-- </section> -\-> -->
+
+<!-- <\!-- <section style="text-align:center"> -\-> -->
+<!-- <\!-- <div > -\-> -->
+<!-- <\!-- <img src="https://img.washingtonpost.com/pb/resources/img/twp-masthead-415x57.svg"/> -\-> -->
+<!-- <\!-- </div> -\-> -->
+<!-- <\!-- <div style="text-align:left; font-size:80%; padding-right:100px; padding-left:100px; line-height: 1.3em;" > -\-> -->
+<!-- <\!-- <h1 style="text-align:center">Bush nominates two judges</h1> -\-> -->
+
+<!-- <\!-- <p>WASHINGTON (AP) — President Bush on Tuesday nominated two individuals to replace retiring jurists on federal courts in the Washington area. ...  -\-> -->
+<!-- <\!-- </div> -\-> -->
+
+<!-- <\!-- <div style="text-align:center"> -\-> -->
+<!-- <\!-- </div> -\-> -->
+
+<!-- <\!-- </section> -\-> -->
+<!-- <section style="text-align:center"> -->
+<!--   <h3>Pipelined NLP</h3> -->
+<!-- <center> -->
+<!--   <div style="padding-top: 250px;font-size:30px"> -->
+<!--     I thought it was clear, but you know, I know what I'm running. - @DeepDrumpf -->
+<!--   </div> -->
+<!--   </center> -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>Pipelined NLP</h3> -->
+<!-- <center> -->
+<!--   <svg class="dep" id="deptree0"></svg> -->
+<!-- </center> -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>Pipelined NLP</h3> -->
+<!-- <center> -->
+<!--   <svg class="dep" id="deptree"></svg> -->
+<!-- </center> -->
+<!-- </section> -->
+
+<!-- <\!-- <section style="text-align:center"> -\-> -->
+<!-- <\!--     <h3>Convolutional Neural Network (Vision)</h3> -\-> -->
+<!-- <\!--   <center><iframe height=800 width = 800 src="http://cs231n.github.io//assets/conv-demo/index.html"></iframe></center> -\-> -->
+<!-- <\!-- </section> -\-> -->
+
+
+<!-- <\!-- <section style="text-align:center"> -\-> -->
+<!-- <\!--   <h3>"Deep" Neural Network</h3> -\-> -->
+<!-- <\!--   <center> -\-> -->
+<!-- <\!--     <img width="800" src ="feature-viz-1-to-2.png" /> -\-> -->
+<!-- <\!--     </center> -\-> -->
+<!-- <\!-- </section> -\-> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>"Deep" Neural Network</h3> -->
+<!--     <center> -->
+<!--       <img width="800" src="feature-viz-4-to-5.png" /> -->
+<!--       </center> -->
+<!-- </section> -->
+
+<!-- <\!-- <section style="text-align:center"> -\-> -->
+<!-- <\!-- <center><blockquote class="twitter-tweet" data-lang="en"><p lang="und" dir="ltr">😀⬇ <a href="https://twitter.com/hashtag/NeuralPuppet?src=hash">#NeuralPuppet</a> <a href="https://t.co/g1Zn9m8LBX">pic.twitter.com/g1Zn9m8LBX</a></p>&mdash; smile vector (@smilevector) <a href="https://twitter.com/smilevector/status/788108216551047168">October 17, 2016</a></blockquote> -\-> -->
+<!-- <\!-- <blockquote class="twitter-tweet" data-lang="en"><p lang="und" dir="ltr">😀⬆ <a href="https://twitter.com/hashtag/NeuralPuppet?src=hash">#NeuralPuppet</a> <a href="https://t.co/NgJurEvrp6">pic.twitter.com/NgJurEvrp6</a></p>&mdash; smile vector (@smilevector) <a href="https://twitter.com/smilevector/status/783836959059824641">October 6, 2016</a></blockquote> -\-> -->
+<!-- <\!-- </section> -\-> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>Generating Language</h3> -->
+
+  
+  
+<!--   <center>I thought it was clear but, you  _____ </center> -->
+  
+ 
+<!--   <center style="padding-top: 50px"> -->
+<!--   <table style="font-size:30pt" cellpadding=10 border=1> -->
+<!--     <tr><td>feel</td> <td> 0.1  </td></tr> -->
+<!--     <tr><td>are</td>  <td>0.05</td></tr> -->
+<!--     <tr><td>want</td> <td>0.03</td></tr> -->
+<!--     <tr><td style="color:blue">know</td> <td> 0.3</td></tr> -->
+<!--     <tr><td>believe</td> <td>0.01</td></tr> -->
+<!--     <tr><td>...</td> <td></td></tr> -->
+<!--   </table> -->
+<!--   <center> -->
+  
+<!-- </section> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>Recurrent Neural Network</h3> -->
+<!--   <center> -->
+<!--     <img width="800" src="rnnlm6.png"/> -->
+<!--   </center> -->
+<!-- </section> -->
+
+<section style="text-align:center" >
+    <h3>(1) Word Vectors</h3>
+  <center>
+    <svg id="wordvecs" width="1301" height="800"> </svg>
+    </center>
+</section>
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>(2) RNN Hidden States</h3> -->
+<!--   <center> -->
+<!--     <svg id="lstm0" width="1000" height="500"> </svg> -->
+<!--   </center> -->
+<!--     <a href="http://lstm.seas.harvard.edu/">LSTMVis</a> <a href="http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=10chunk&source=states::states2&pos=100&brush=20,21"> Demo </a> -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>(2) RNN Hidden States</h3> -->
+<!--   <center> -->
+<!--     <svg id="lstm" width="1000" height="500"> </svg> -->
+<!--   </center> -->
+<!--   <a href="http://lstm.seas.harvard.edu/">LSTMVis</a> <a href="http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=10chunk&source=states::states2&pos=100&brush=20,21"> Demo </a> -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>(2) RNN Hidden States</h3> -->
+<!--   <center> -->
+<!--     <svg id="lstm2" width="1000" height="500"> </svg> -->
+<!--   </center> -->
+<!--     <a href="http://lstm.seas.harvard.edu/">LSTMVis</a> <a href="http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=10chunk&source=states::states2&pos=100&brush=20,21"> Demo </a> -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>(2) RNN Hidden States</h3> -->
+<!--   <center> -->
+<!--     <svg id="lstm3" width="1000" height="500"> </svg> -->
+<!--   </center> -->
+
+  
+<!--   <a href="http://lstm.seas.harvard.edu/">LSTMVis</a> <a href="http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=10chunk&source=states::states2&pos=100&brush=20,21"> Demo </a> -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>(3) Word Scoring</h3> -->
+<!--   <center>I thought it was clear but, you  _____ </center> -->
+  
+<!--   <center> -->
+<!--     <svg id="score" width="1301" height="800"> </svg> -->
+<!--   </center> -->
+<!-- </section> -->
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>(Non-Twitter) Applications</h3> -->
+<!--   <div style="text-align:left; padding-left:525px"> -->
+<!--   <ul> -->
+<!--     <li>Machine Translation</li> -->
+<!--   <li>Question Answering</li> -->
+<!--   <li>Speech</li> -->
+<!--   <li>Conversational Agents </li> -->
+<!--   <li>Caption Generation</li> -->
+<!--   <li>Parsing </li> -->
+<!--   <li>Summarization</li> -->
+<!--   <li>Argument Generation</li> -->
+<!--   <li>Grammar Correction</li> -->
+<!--   <li>Sentence Compression  </li> -->
+<!--   <li>Video-to-Text</li> -->
+<!--   </ul> -->
+<!--   </div> -->
+
+<!-- </section> -->
+
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>Machine Translation</h3> -->
+<!--   <center> -->
+<!--     <img src="simple-attn.png" width="800px"> -->
+<!--   </center> -->
+<!--     <a href="http://www.github.com/harvardnlp/seq2seq-attn/">Code</a> -->
+<!--   <a href="http://demo-pnmt.systran.net">System</a> -->
+<!-- </section> -->
+
+
+<!-- <section style="text-align:center"> -->
+<!--   <h3>Image-To-Text</h3> -->
+<!--   <div id="im2latexbuttons"> -->
+<!--   </div> -->
+<!--   <center> -->
+<!--     <svg id="im2latex"></svg> -->
+<!--   </center> -->
+<!--   <a href="http://lstm.seas.harvard.edu/latex/">im2markup</a> -->
+<!-- </section> -->
+
+<!-- <section > -->
+<!--   <center> -->
+<!--   <blockquote width="300" class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Seq KD (<a href="https://t.co/M0VY5TeIy9">https://t.co/M0VY5TeIy9</a>): learn small LSTMs for fast translation. Runs on a phone (<a href="https://t.co/bMwQvSMvje">https://t.co/bMwQvSMvje</a>) <a href="https://t.co/mQRHAQt9KI">pic.twitter.com/mQRHAQt9KI</a></p>&mdash; harvardnlp (@harvardnlp) <a href="https://twitter.com/harvardnlp/status/747838333653553154">June 28, 2016</a></blockquote> -->
+<!--   <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script> -->
+<!--   </center> -->
+<!-- </section> -->
+
+<!-- <section  style="padding:5em 9em;"> -->
+<!-- </section> -->
+
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/lodash/dist/lodash.min.js"></script>
+<script src="d3.v3.js"></script>
+<script src="stack.v1.js"></script>
+<script src="pf_pc_plot.js"></script>
+<script src="dependency-tree.js"></script>
+<!-- <script src="project.js"></script> -->
+<script src="words.js"></script>
+<script src="attention.js"></script>
+<script src="animation.js"></script>
+
+
