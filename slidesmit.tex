@@ -317,7 +317,7 @@
   \begin{center}
     \includegraphics[height=0.9\textheight]{graph}
 
-    \url{http://harvardnlp.github.io/seq2seq-talk/web/wordvecs.html}
+    \href[pdfnewwindow=true]{http://harvardnlp.github.io/seq2seq-talk/web/wordvecs.html}{[Words Vectors]}
    \end{center}
 \end{frame}
 
@@ -395,13 +395,15 @@
   \centerline{\textbf{Seq2Seq-Attn}   }
 
   \begin{itemize}
-  \item HarvardNLP's open-source system (Yoon Kim) \url{http://github.com/harvardnlp/seq2seq-attn}.
+  \item HarvardNLP's open-source system (Yoon Kim) \href[pdfnewwindow=true]{http://github.com/harvardnlp/seq2seq-attn}{http://github.com/harvardnlp/seq2seq-attn}
     \air 
   \item Used by SYSTRAN for 32 language pairs \Cite{systran}
   \end{itemize}
-
+  
   \begin{center}
     \includegraphics[width=0.9\textwidth]{systran}
+
+    \href[pdfnewwindow=true]{http://demo-pnmt.systran.net}{[Demo]}
   \end{center}
 
 \end{frame}
@@ -485,7 +487,9 @@ age . }
   \begin{figure}
     \centering
   \end{figure}
-  \centerline{\href{https://harvardnlp.github.io/seq2seq-talk/web/math.html}{[Latex Example]}}
+
+  \centerline{\href[pdfnewwindow=true]{https://harvardnlp.github.io/seq2seq-talk/web/math.html}{[Latex Example]}}
+  \centerline{\href[pdfnewwindow=true]{https://lstm.seas.harvard.edu/latex}{[Project]}}
 \end{frame}
 
 
@@ -516,7 +520,8 @@ age . }
   \item How can we \textbf{interpret} these learned hidden representations? 
 
     \begin{center}
-      \alert{LSTMVis} 
+      \alert{LSTMVis}   
+      \href[pdfnewwindow=true]{https://lstm.seas.harvard.edu/}{lstm.seas.harvard.edu}
 
       \Cite{Strobelt2016}
 
@@ -536,13 +541,13 @@ age . }
 
 \section{Interpretation}
 
-\begin{frame}
-  \air 
-  \includegraphics[width=\textwidth,trim={0 0 0 19.5cm},clip]{filters}
-  \begin{center}
-     \Cite{DBLP:conf/eccv/ZeilerF14}
-  \end{center}
-\end{frame}
+% \begin{frame}
+%   \air 
+%   \includegraphics[width=\textwidth,trim={0 0 0 19.5cm},clip]{filters}
+%   \begin{center}
+%      \Cite{DBLP:conf/eccv/ZeilerF14}
+%   \end{center}
+% \end{frame}
 
 % \begin{frame}
 %   \begin{frame}
@@ -556,18 +561,16 @@ age . }
 % \end{frame}
 
 
-% \begin{frame}
-%   % \begin{frame}
-%   \centerline{Vector-Space RNN Representation}
-%   \begin{center}
-%     \includegraphics[height=5cm]{lstmrep}
-%   \begin{center}
-%     \includegraphics[width=11cm]{rnn}
-%   \end{center}
-
-
-%   \end{center}
-% \end{frame}
+\begin{frame}
+  % \begin{frame}
+  \centerline{Vector-Space RNN Representation}
+  \begin{center}
+    \includegraphics[height=5cm]{lstmrep}
+  \begin{center}
+    \includegraphics[width=11cm]{rnn}
+  \end{center}
+  \end{center}
+\end{frame}
 
 
 \begin{frame}
@@ -599,7 +602,7 @@ age . }
     \[ p(w_t | w_1, \ldots, w_{t-1}) \] 
   
 \air
-  \centerline{\href{http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=00parens&source=states::states2&pos=150}{[Parens Example]}}
+  \centerline{\href[pdfnewwindow=true]{http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=00parens&source=states::states2&pos=150}{[Parens Example]}}
 \end{frame}
 
 
@@ -626,7 +629,7 @@ age . }
     \[ p(w_t | w_1, \ldots, w_{t-1}) \] 
 
 \air
-  \centerline{ \href{http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=05childbook&source=states::states1&pos=100}{[LM Example]}}
+  \centerline{ \href[pdfnewwindow=true]{http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=05childbook&source=states::states1&pos=100}{[LM Example]}}
 \end{frame}
 
 
@@ -652,7 +655,7 @@ age . }
 
 
 \air
-  \centerline{ \href{http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=20autoencoder&source=states::states2&pos=100}{[Summarization Example]}}
+  \centerline{ \href[pdfnewwindow=true]{http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=20autoencoder&source=states::states2&pos=100}{[Summarization Example]}}
 \end{frame}
 \begin{frame}
   \centerline{\structure{This Talk}}
@@ -1668,9 +1671,11 @@ Student  $\,$   & $14.7$ & $-$ & $17.6$&  $-$ &   $8.2$ & $0.9\%$  \\
 \begin{frame}
 \centerline{\structure{An Application}}
 \begin{center}
+
 \includegraphics[width=5cm]{phonemt}
   \end{center}
 
+  \href[pdfnewwindow=true]{https://harvardnlp.github.io/seq2seq-talk/transfast.gif}{[App]}
 \end{frame}
 
 
