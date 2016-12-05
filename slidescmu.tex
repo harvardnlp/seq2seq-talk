@@ -1698,8 +1698,104 @@ Prune student model: Same methodology as \cite{See2016}
     \item Can compress an ensemble into a single model \Cite{Kuncoro2016}
     \end{itemize}
   \end{itemize}
+\end{frame}
 
+\begin{frame}
+  \begin{center}
+    \textbf{Coming Work}    
+  \end{center}
 
+  \begin{itemize}
+  \item Structured Attention Networks (Kim et al 2016)
+  \end{itemize}
+
+  \begin{figure}
+  \centering
+  \begin{subfigure}{0.32\textwidth}
+    \centering
+  \begin{tikzpicture}
+    \tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+    minimum size=20pt, font=\fontsize{10}{10}\selectfont]
+    \tikzstyle{obs} = [latent,fill=gray!25]
+
+    \node[obs](q){$q$};
+    \node[below of=q, latent](za){$z_1$};
+    \node[xshift= -1.5cm,below of=za, obs](xa){$x_1$};
+    \node[right of=xa, obs](xb){$x_2$};
+    \node[right of=xb, obs](xc){$x_3$};
+    \node[right of=xc, obs](xd){$x_4$};
+
+    \draw[dashed] (xa) to (za);
+    \draw[dashed] (xb) to (za);
+    \draw[dashed] (xc) to (za);
+    \draw[dashed] (xd) to (za);
+  \end{tikzpicture}
+  \caption{}
+  \end{subfigure}
+  \begin{subfigure}{0.32\textwidth}
+    \centering
+  \begin{tikzpicture}
+    \tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+    minimum size=20pt, font=\fontsize{10}{10}\selectfont]
+    \tikzstyle{obs} = [latent,fill=gray!25]
+
+    \node[obs](q){$q$};
+    \node[xshift= -1.5cm, below of=q, latent](za){$z_1$};
+    \node[right of=za, latent](zb){$z_2$};
+    \node[right of=zb, latent](zc){$z_3$};
+    \node[right of=zc, latent](zd){$z_4$};
+    \node[below of=za, obs](xa){$x_1$};
+    \node[below of=zb, obs](xb){$x_2$};
+    \node[below of=zc, obs](xc){$x_3$};
+    \node[below of=zd, obs](xd){$x_4$};
+
+    % \draw (za) to (zb);
+    % \draw (zb) to (zc);
+    % \draw (zc) to (zd);
+
+    \draw[dashed] (xa) to (za);
+    \draw[dashed] (xb) to (zb);
+    \draw[dashed] (xc) to (zc);
+    \draw[dashed] (xd) to (zd);
+  \end{tikzpicture}
+  \caption{}
+  \end{subfigure}
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+  \begin{tikzpicture}
+    \tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+    minimum size=20pt, font=\fontsize{10}{10}\selectfont]
+    \tikzstyle{obs} = [latent,fill=gray!25]
+
+    \node[obs](q){$q$};
+    \node[xshift= -1.5cm, below of=q, latent](za){$z_1$};
+    \node[right of=za, latent](zb){$z_2$};
+    \node[right of=zb, latent](zc){$z_3$};
+    \node[right of=zc, latent](zd){$z_4$};
+    \node[below of=za, obs](xa){$x_1$};
+    \node[below of=zb, obs](xb){$x_2$};
+    \node[below of=zc, obs](xc){$x_3$};
+    \node[below of=zd, obs](xd){$x_4$};
+
+    \draw[line width=1] (za) to (zb);
+    \draw[line width=1] (zb) to (zc);
+    \draw[line width=1] (zc) to (zd);
+
+    \draw[dashed] (xa) to (za);
+    \draw[dashed] (xb) to (zb);
+    \draw[dashed] (xc) to (zc);
+    \draw[dashed] (xd) to (zd);
+  \end{tikzpicture}
+  \caption{}
+  \end{subfigure}
+
+% \includegraphics[scale=0.3]{linear-crf}
+ %  \caption{\small \label{fig:seq} Three versions of a latent variable attention
+ %    model:
+ % (a) A standard soft-selection attention network, (b) A
+ %    Bernoulli (sigmoid) attention network, (c) A linear-chain
+ %    structured attention model for segmentation. The input and query are denoted with $x$ and $q$ respectively. }
+\end{figure}
 
 \end{frame}
 
