@@ -3,6 +3,12 @@
 \setbeamertemplate{navigation symbols}{}
 \let\tempone\itemize
 \let\temptwo\enditemize
+\newcommand{\din}{{d_{\mathrm{in}}}}
+\newcommand{\dhid}{{d_{\mathrm{hid}}}}
+\newcommand{\dwin}{{d_{\mathrm{win}}}}
+\newcommand{\dout}{{d_{\mathrm{out}}}}
+\newcommand{\demb}{{d_{\mathrm{emb}}}}
+
 \renewenvironment{itemize}{\tempone\addtolength{\itemsep}{0.5\baselineskip}}{\temptwo}
 \usepackage{beamerthemeshadow}
 \usepackage{tikz}
@@ -345,11 +351,11 @@ each of the above steps.
   \end{quote}
 \end{frame}
 
-\begin{frame}
-  \begin{center}
-    \textbf{Simple Language Models}
-  \end{center}
-\end{frame}
+% \begin{frame}
+%   \begin{center}
+%     \textbf{Simple Language Models}
+%   \end{center}
+% \end{frame}
 
 
 \begin{frame}
@@ -436,7 +442,6 @@ Steps:
 
   \pause
 % \begin{frame}{Neural Network}
-  One-layer of a network architecture.
 
   \[NN_{MLP1}(\boldx) =  \boldW^2 \sigma(\boldW^1 \boldx + \boldb^1) + \boldb^2\]
   \begin{itemize}
@@ -629,6 +634,30 @@ Steps:
     \includegraphics[width=5cm]{logbilinear}
   \end{center}
   
+\end{frame}
+
+\begin{frame}
+  \begin{center}
+    \includegraphics[width=8cm]{hill}
+  \end{center}  
+\end{frame}
+
+\begin{frame}
+  \begin{center}
+    \textbf{Visual Classification}
+  \end{center}
+  \begin{center}
+    \includegraphics[width=\textwidth]{mylenet}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \begin{center}
+    \includegraphics[width=10cm]{imclass}
+  \end{center}  
+  \begin{center}
+    \href[pdfnewwindow=true]{https://quickdraw.withgoogle.com/}{[Quickdraw]}
+  \end{center}
 \end{frame}
 
 \begin{frame}
@@ -890,6 +919,38 @@ For $t \niceq 1 \ldots T$:
   \item \Cite{mou2015backward} \Cite{cheng2016neural} \Cite{toutanovadataset} \Cite{wang2016experimental} \Cite{takaseneural}, among others
   \item Used by Washington Post to suggest headlines \Cite{shuguangwang}
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{table}
+\scriptsize
+\centering
+  \begin{tabular}{p{1cm}p{9cm}} 
+\toprule
+Src (1) &  As expected John Beck will not play in the Washington Redskins' preseason opener against the Pittsburgh Steelers\\
+Truth & Beck, Atogwe out for preseason opener\\ 
+\midrule
+NMT & John Beck won't play in Redskins' preseason opener\\ 
+\bottomrule
+% \hline\hline
+\toprule
+Src (2) &  A two vehicle accident injured four people Wednesday night and forced authorities to shut down Suitland Parkway DC police said\\
+Truth & Four injured in Suitland Parkway crash\\ 
+\midrule
+
+NMT & Accident shuts down Suitland Parkway\\ 
+\bottomrule 
+% \hline\hline
+\toprule
+Src (3) &  Twenty three members and associates of what prosecutors have described as a drug gang known as the P Street crew were indicted yesterday on charges of selling hundreds of kilograms of cocaine and guarding their turf through killings rape and bombings\\
+Truth &  Alleged drug gang indicted \\ 
+\midrule
+NMT & P Street crew indicted\\ 
+\bottomrule
+
+\end{tabular}
+\end{table}
+
 \end{frame}
 
 \begin{frame}
