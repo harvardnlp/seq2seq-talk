@@ -98,6 +98,10 @@
 
 \newcommand{\ha}{\boldh_{\ua}}
 \newcommand{\hp}{\boldh_{\up}}
+
+\newcommand{\boldx}{\mathbf{x}}
+\newcommand{\boldy}{\mathbf{y}}
+
 % \newcommand{\hc}{\boldh_{\mathrm{c}}}
 
 
@@ -122,20 +126,20 @@
 % \input{pictures_header}
 
 
-\title[Seq2seq]{CS182 Guest Lecture: \\ RNNs and Text}
+\title[Seq2seq]{CS 109b \\   RNNs and Language }
 
 
 \author[Alexander Rush]{Alexander Rush  (@harvardnlp) \\  
-{\scriptsize  (with  Yoon Kim, Sam Wiseman, Hendrik Strobelt, Yuntian Deng, Allen Schmaltz) } \\
+% {\scriptsize  (with  Yoon Kim, Sam Wiseman, Hendrik Strobelt, Yuntian Deng, Allen Schmaltz) } \\
 % \url{http://www.github.com/harvardnlp/seq2seq-talk/}
 } 
 
-\institute[Harvard SEAS]{ \\
-  \begin{center}
-    \includegraphics[width=1.3cm]{seas}
-  \end{center}
+% \institute[Harvard SEAS]{ \\
+%   \begin{center}
+%     \includegraphics[width=1.3cm]{seas}
+%   \end{center}
 
-}
+% }
 \date{}
 % \usetheme{Madrid}
 
@@ -425,14 +429,93 @@ Steps:
   \end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Intuition: N-Gram Issues}
+  
+  In training we might see, 
+
   \begin{center}
-    \includegraphics[width=5cm]{brain}
+    the arizona corporations commission \alert{authorized}
   \end{center}
+
+  But at test we see, 
+  \begin{center}
+    the colorado businesses organization \alert{\_\_\_}
+  \end{center}
+  \pause 
+  
+  \begin{itemize}
+  \item Does this training example help here?
+    \begin{itemize}
+    \item Not really. No count overlap.
+    \end{itemize}
+    \air 
+    \pause 
+  \item Intuition: hope to learn that similar words act similarly. 
+  \end{itemize}
 \end{frame}
 
+
+\begin{frame}{Alternative Approach}
+
+  Consider now using neural networks for this prediction.
+\air
+
+Two important ideas that we have seen so far.
+
+  \begin{enumerate}
+  \item Softmax for multiclass prediction of next word (out of $\mcV$ )
+  \item  Adaptive basis to learn representation of past words
+
+  \end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Language Modeling as Supervised Learning}
+  \begin{quote}
+    THE ROOM WAS NOT VERY LIGHT A SMALL OBLONG READING LAMP ON THE
+    DESK SHED GLOW ON POLISHED \_\_\_\
+  \end{quote}
+
+
+  \begin{itemize}
+  \item Sample pairs are $(\boldx, \boldy)$.
+
+  \item Input is sentence up until the blank, output is next word
+    prediction.
+  \item Challenging multi-class prediction problem, feature representation matters.
+    \pause
+  \item Begin by considering count-based categorical prediction models:
+    \[ p(\boldy | \boldx) \] 
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Word Representation}
+  \begin{itemize}
+  \item We say the vocabulary of the language is $|\mcV|$ 
+
+  \item In practice $|\mcV|$ is 10,000 - 100,000 unique words      
+
+  \item Each word has an associated numerical index.
+
+  \item We represent each word as a one-hot vector $C_k$ where 
+    $k \in \{1, \ldots |\mcV|\}$  
+
+    \[ [0, 0, 0, 0, 0, 1, \ldots, 0 ]\]   
+  \item For this problem, both input and output will use one-hot $C_k$ vectors.
+  \end{itemize}
+
+\end{frame}
+
+
+% \begin{frame}
+%   \begin{center}
+%     \includegraphics[width=5cm]{brain}
+%   \end{center}
+% \end{frame}
+
 \begin{frame}
-  A \structure{neural network} is a \alert{function approximator} (no more, no less). 
+  A \structure{neural network} is a \alert{function approximator}
 
   
   \begin{itemize}
@@ -443,22 +526,39 @@ Steps:
   \pause
 % \begin{frame}{Neural Network}
 
-  \[NN_{MLP1}(\boldx) =  \boldW^2 \sigma(\boldW^1 \boldx + \boldb^1) + \boldb^2\]
+  \[NN_{MLP1}(\boldx) =  \boldW^2 tanh(\boldW^1 \boldx + \boldb^1) + \boldb^2\]
   \begin{itemize}
   \item $\boldx$; input
 
   \item $\boldW, \boldb$; parameters
   % \item $\boldW^1 \in \reals^{\din \times \dhid}, \boldb^1 \in \reals^{1 \times \dhid}$; first affine transformation
   % \item $\boldW^2 \in \reals^{\dhid \times \dout}, \boldb^2 \in \reals^{1 \times \dout}$; second affine transformation
-  \item $\sigma$ is \textit{non-linearity} 
+  \item $tanh$ is \textit{non-linearity} 
   % \item $g(\boldx\boldW^1 + \boldb^1)$ is the \textit{hidden layer}
   \end{itemize}
   \begin{figure}
     \centering
-    \includegraphics[width=5cm]{sigmoid}     
+    \includegraphics[width=5cm]{tanh}     
   \end{figure}
 
 \end{frame}
+
+\begin{frame}
+  \begin{center}
+    \begin{tabular}{cclll}
+      \structure{Embeddings} & & sparse features & $\Rightarrow$ & dense features \\\\
+    \end{tabular}
+  \end{center}
+
+  \begin{center}
+    \includegraphics[width=7cm]{emb}
+  \end{center}
+\end{frame}
+
+
+
+
+
 
 % \begin{frame}
 %   Logistic sigmoid function:
@@ -472,6 +572,13 @@ Steps:
 %   \item $\sigma((\boldW^1 \boldx + \boldb^1)_i)$
 %   \end{itemize}
 % \end{frame}
+
+
+
+
+\begin{frame}{Softmax}
+  
+\end{frame}
 
 
 
@@ -537,6 +644,41 @@ Steps:
   \end{center}
 \end{frame}
 
+
+\begin{frame}{Interpretation of Network}
+
+  \begin{itemize}
+  \item Notation input $\reals^m$ and basis $\reals^d$.  
+  \item Unlike other problems here $m$ is large $|\mcV|$ (10,000-100,000)
+  \item But $d$ can be much smaller. Why is that?  
+  
+  \air
+  \[\boldW^1 \begin{bmatrix}0 \\ 0\\ 1 \\ \vdots \\0 \\\end{bmatrix} = \boldW^1_{\star, j} \] 
+      
+  \item The output of this layer $\boldW^1_{\star, j} \in \reals^d$ is called a \textit{word vector}. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sparse versus Distributed Representation}
+  \begin{itemize}
+  \item Internally we have now seen two representations of words 
+
+  \item $\boldx$ Sparse:  Very high dimensional, easy to get back the original word, 
+    but feature weights are not shared between words. $\boldw_j$ is weight for 
+    one word. 
+    \[ [0, 0, 0, 1, \ldots 0] \] 
+    \pause 
+
+  \item $\bphi(\boldx)$ Distributed:  Low dimensional but dense, each dimension is a feature of the 
+    word, $\boldw_j$ is weight for basis function. 
+    \[ [0.23, 0.32, 0.109, -0.1231, \ldots, 0.402] \] 
+
+  \end{itemize}
+\end{frame}
+
+
+
+
 \begin{frame}
   \begin{center}
     \textbf{Neural Networks for Language}
@@ -554,14 +696,14 @@ Steps:
     \node(ab)[below of =  aa, draw, circle]{$x_2$};
     \node(ac)[below of = ab, draw,circle]{$x_3$};
     \node(ad)[below of = ac]{$\vdots$};
-    \node(ae)[below of =  ad, draw, circle]{$x_{\din}$};
+    \node(ae)[below of =  ad, draw, circle]{$x_{n}$};
 
 
     \node(ba)[xshift= 2cm, yshift=-0.5cm, right of = aa, draw, circle]{$h_1$};
     \node(bb)[below of =  ba, draw, circle]{$h_2$};
     \node(bc)[below of = bb]{$\vdots$};
 
-    \node(bd)[below of =  bc, draw, circle]{$h_{\dhid}$};
+    \node(bd)[below of =  bc, draw, circle]{$h_{d}$};
 
     \path[draw] (aa) -- (ba);
     \path[draw] (aa) -- (bb);
@@ -608,70 +750,62 @@ Steps:
 
 
 \begin{frame}
-  Example:
+  \begin{center}
+    \includegraphics[height=0.9\textheight]{graph}
+
+    \href[pdfnewwindow=true]{http://harvardnlp.github.io/seq2seq-talk/web/wordvecs.html}{[Words Vectors]}
+   \end{center}
+\end{frame}
+
+\begin{frame}{Word Vector Properties}
   
-  \begin{itemize}
-  \item Consider a language with two words: the, red, and dog. 
-  \item We would like the following sentences to be valid: the red dog, the dog red, dog red red, red the dog.
-
-  \item Can you design a neural network to do this?
-
-  \end{itemize}
+  
 
 \end{frame}
 
-\begin{frame}
-  \begin{center}
-    How does it learn to do this?
-  \end{center}
 
-  \begin{itemize}
-  \item Very short answer: hill climbing.
-    \air 
-  \item Backpropagation. Compute gradient, update $\theta$ 
-  \end{itemize}
-  \begin{center}
-    \includegraphics[width=5cm]{logbilinear}
-  \end{center}
+\begin{frame}{Modern Word Vectors}  
+  [Demo: TensorBoard]
+\end{frame}
+
+
+
+\begin{frame}{Problems With MLP Language Models}  
   
 \end{frame}
 
 \begin{frame}
   \begin{center}
-    \includegraphics[width=8cm]{hill}
-  \end{center}  
-\end{frame}
-
-\begin{frame}
-  \begin{center}
-    \textbf{Visual Classification}
-  \end{center}
-  \begin{center}
-    \includegraphics[width=\textwidth]{mylenet}
+    \textbf{Recurrent Neural Networks Models}
   \end{center}
 \end{frame}
 
-\begin{frame}
-  \begin{center}
-    \includegraphics[width=10cm]{imclass}
-  \end{center}  
-  \begin{center}
-    \href[pdfnewwindow=true]{https://quickdraw.withgoogle.com/}{[Quickdraw]}
-  \end{center}
-\end{frame}
 
-\begin{frame}
-  \begin{center}
-    \textbf{Neural Network Language Models}
-  \end{center}
+\begin{frame}{RNN: Overview}
+  
+  \begin{itemize}
+  \item Most successful deep learning model for language. 
+    
+  \item Deep over ``time''.  
+  \end{itemize}
 \end{frame}
-
 
 % \begin{frame}
 %     \begin{center}
 %     \textbf{This Talk: Neural Networks For Language}
 %   \end{center}
 % \end{frame}
+
+\begin{frame}{RNN}
+  \begin{center}
+    \includegraphics[width=11cm]{rnn}
+  \end{center}  
+\end{frame}
+
+\begin{frame}
+  RNN()
+\end{frame}
+
 
 
 \begin{frame}
@@ -686,26 +820,6 @@ Steps:
       \structure{Softmax} & & dense features & $\Rightarrow$ & discrete predictions \\
     \end{tabular}
   \end{center}
-\end{frame}
-
-\begin{frame}
-  \begin{center}
-    \begin{tabular}{cclll}
-      \structure{Embeddings} & & sparse features & $\Rightarrow$ & dense features \\\\
-    \end{tabular}
-  \end{center}
-
-  \begin{center}
-    \includegraphics[width=7cm]{emb}
-  \end{center}
-\end{frame}
-
-\begin{frame}
-  \begin{center}
-    \includegraphics[height=0.9\textheight]{graph}
-
-    \href[pdfnewwindow=true]{http://harvardnlp.github.io/seq2seq-talk/web/wordvecs.html}{[Words Vectors]}
-   \end{center}
 \end{frame}
 
 
@@ -737,542 +851,6 @@ Steps:
 
   \[ p(w_{1:T} ) = \prod_{t} p(w_t | w_1, \ldots, w_{t-1}) \] 
     % \caption{Xu et al (2015)}  
-\end{frame}
-
-\begin{frame}
-  \begin{center}
-    \structure{Contextual Language Model / ``seq2seq''}
-  \end{center}
-    \air 
-   
-    \begin{center}
-      \includegraphics[width=0.6\textwidth]{rnnlm6}
-    \end{center}
-  \begin{itemize}
-  \item Key idea, contextual language model based on encoder $x$: 
-  \end{itemize}
-  \[ p(w_{1:T} | x) = \prod_{t} p(w_t | w_1, \ldots, w_{t-1}, x) \] 
-  
-\end{frame}
-
-\begin{frame}
-  \begin{center}
-    \includegraphics[width=0.6\textwidth]{attenalign}
-  \end{center}
-\end{frame}
-
-
-\begin{frame}
-  \begin{center}
-    Actual Seq2Seq / Encoder-Decoder / Attention-Based Models
-  \end{center}
-    \begin{center}
-      \includegraphics[width=0.7\textwidth]{simple-attn}
-    \end{center}
-  \begin{itemize}
-  \item Different encoders, attention mechanisms, input feeding, ...
-    \air
-  \item Almost all models use LSTMs or other gated RNNs 
-    \air
-  \item Large multi-layer networks  necessary for good performance.
-    \begin{itemize}
-    \item 4 layer, 1000 hidden dims is common for MT
-    \end{itemize}
-  % \item Main idea, contextual language model based on encoder $\cvec$: 
-  \end{itemize}
-  % \[ p(w_{1:T} | \cvec) = \prod_{t} p(w_t | w_1, \ldots, w_{t-1}, \cvec) \] 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \begin{center}
-    \textbf{Beam Search} ($K = 3$)
-  \end{center}
-  \air 
-
-    \begin{center}
-  \begin{tikzpicture}[transform canvas = {scale=0.8}]
-    \tikzstyle{beam}=[draw, minimum height=0.6cm, anchor=base, text height=5, text depth=0, minimum width=1.5cm,thin, rounded corners, line width=0.03cm]
-   \tikzstyle{mat}=[draw=white]
-    \tikzset{>=stealth',every on chain/.append style={join},
-      every join/.style={->}}
-
-     
-       \begin{scope}
-         
-   \matrix (G) [matrix of nodes, nodes={beam},inner sep=1mm,row sep=0.03cm, column sep=0.8cm ] {
-    \node<1->(G-1-1){a}; & \node<7->(G-1-2){red}; & \node<8->(G-1-3){dog}; & \node<9->(G-1-4){smells}; & \node<10->(G-1-5){home};  & \node<11->(G-1-6){today}; \\
-    \node<1->(G-2-1){the}; & \node<7->(G-2-2){dog}; & \node<8->(G-2-3){dog}; & \node<9->(G-2-4){barks}; & \node<10->(G-2-5){quickly}; & \node<11->(G-2-6){Friday}; \\
-    \node<1->(G-3-1){red}; & \node<7->(G-3-2){blue}; & \node<8->(G-3-3){cat}; &  \node<9->(G-3-4){walks}; & \node<10->(G-3-5){straight}; & \node<11->(G-3-6){now}; \\    };
-
-    \only<7->{
-      \draw[->] (G-1-1.east) -> (G-1-2.west); 
-      \draw[->] (G-2-1.east) -> (G-2-2.west); 
-      \draw[->] (G-1-1.east) -> (G-3-2.west); 
-      \draw[double, line width=0.03cm] (G-3-1.south west) -- (G-3-2.south east);
-    }
-  
-    \only<8->{
-      \draw[->] (G-1-2.east) -> (G-2-3.west); 
-      \draw[->] (G-3-2.east) -> (G-3-3.west); 
-      \draw[->] (G-3-2.east) -> (G-1-3.west); 
-      \draw[double, line width=0.03cm] (G-3-1.south west) -- (G-3-3.south east);
-    }
-    
- \only<9->{
-    \draw[->] (G-1-3.east) -> (G-3-4.west); 
-    \draw[->] (G-2-3.east) -> (G-2-4.west); 
-    \draw[->] (G-1-3.east) -> (G-1-4.west); 
-    \draw[double, line width=0.03cm] (G-3-1.south west) -- (G-3-4.south east);
-}
- \only<11->{
-    \draw[->] (G-1-5.east) -> (G-1-6.west); 
-    \draw[->] (G-1-5.east) -> (G-3-6.west); 
-    \draw[->] (G-2-5.east) -> (G-2-6.west); 
-    \draw[double, line width=0.03cm] (G-3-1.south west) -- (G-3-6.south east);
-}
-
- \only<10->{
-    \draw[->] (G-3-4.east) -> (G-1-5.west); 
-    \draw[->] (G-3-4.east) -> (G-2-5.west); 
-    \draw[->] (G-3-4.east) -> (G-3-5.west); 
-    \draw[double, line width=0.03cm] (G-3-1.south west) -- (G-3-5.south east);
-}
-
-\end{scope}
-\end{tikzpicture}
-\end{center}
-
-    \air
-    \air
-    \air
-For $t \niceq 1 \ldots T$:
-   \begin{itemize}
-   \item For all $k$ and for all possible output words $w$:
-     \begin{align*}
-     \alert<2>{s(w, \hat{y}_{1:t-1}^{(k)})} \gets \alert<3>{\log p(\hat{y}^{(k)}_{1:t-1}| x)} + \alert<4>{\log p(w | \hat{y}^{(k)}_{1:t-1}, x)} \end{align*}
-   \item Update beam:
-%     \begin{align*}
-%     \hspace*{-4.4cm} \hat{y}_{1:t}^{(1:K)} \gets \topK_{s} \left\lbrace \mcV \times \hat{y}_{1:t-1}^{(1:K)} \right\rbrace
-%\end{align*}  
-\begin{align*}
-\hspace*{-4cm} \alert<5>{\hat{y}_{1:t}^{(1:K)}} \gets \alert<6>{\kargmax} \, s(w, \hat{y}_{1:t-1}^{(k)})
-\end{align*}
-   \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-  \begin{center}
-
-  \textbf{Applications}
-\end{center}
-
-\end{frame}
-
-\begin{frame}
-  \centerline{\textbf{Seq2Seq-Attn}   }
-
-  \begin{itemize}
-  \item HarvardNLP's open-source system (Yoon Kim) \href[pdfnewwindow=true]{http://github.com/harvardnlp/seq2seq-attn}{http://github.com/harvardnlp/seq2seq-attn}
-    \air 
-  \item Used by SYSTRAN for 32 language pairs \Cite{systran}
-  \end{itemize}
-  
-  \begin{center}
-    \includegraphics[width=0.9\textwidth]{systran}
-
-    \href[pdfnewwindow=true]{http://demo-pnmt.systran.net}{[Demo]}
-  \end{center}
-
-\end{frame}
-
-
-\begin{frame}
-  \centerline{\textbf{Seq2Seq Applications:} \alert{Neural Summarization} \Cite{Rush2015} }
-  \begin{center}
-    \textbf{Source} (First Sentence)
-  \end{center}
-  
-  \begin{figure}
-    \textit{\structure<2>{Russian Defense Minister Ivanov}
-      called \structure<2>{Sunday} for the creation of
-      a joint front \structure<2>{for combating} global terrorism. }
-  \end{figure}
-
-  \begin{center}
-    \textbf{Target} (Title)
-  \end{center}
-  \mair
-
-  \begin{figure}
-    \centering
-    \textit{\alert<2>{Russia} calls for joint
-      front \alert<2>{against} terrorism.}
-  \end{figure}
-
-\air
-\air
-
-  \begin{itemize}
-  \item \Cite{mou2015backward} \Cite{cheng2016neural} \Cite{toutanovadataset} \Cite{wang2016experimental} \Cite{takaseneural}, among others
-  \item Used by Washington Post to suggest headlines \Cite{shuguangwang}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-\begin{table}
-\scriptsize
-\centering
-  \begin{tabular}{p{1cm}p{9cm}} 
-\toprule
-Src (1) &  As expected John Beck will not play in the Washington Redskins' preseason opener against the Pittsburgh Steelers\\
-Truth & Beck, Atogwe out for preseason opener\\ 
-\midrule
-NMT & John Beck won't play in Redskins' preseason opener\\ 
-\bottomrule
-% \hline\hline
-\toprule
-Src (2) &  A two vehicle accident injured four people Wednesday night and forced authorities to shut down Suitland Parkway DC police said\\
-Truth & Four injured in Suitland Parkway crash\\ 
-\midrule
-
-NMT & Accident shuts down Suitland Parkway\\ 
-\bottomrule 
-% \hline\hline
-\toprule
-Src (3) &  Twenty three members and associates of what prosecutors have described as a drug gang known as the P Street crew were indicted yesterday on charges of selling hundreds of kilograms of cocaine and guarding their turf through killings rape and bombings\\
-Truth &  Alleged drug gang indicted \\ 
-\midrule
-NMT & P Street crew indicted\\ 
-\bottomrule
-
-\end{tabular}
-\end{table}
-
-\end{frame}
-
-\begin{frame}
-  \centerline{\textbf{Seq2Seq Applications:} \alert{Grammar Correction} \Cite{Schmaltz2016} }
-  % \centerline{\structure{Grammar Correction} \cite{}}
-  
-  \begin{center}
-    \textbf{Source} (Original Sentence)
-  \end{center}
-  
-  \begin{figure}
-    \textit{There is no \structure{a doubt}, tracking \structure{systems has} brought many benefits in this information
-age . }
-  \end{figure}
-
-  \begin{center}
-    \textbf{Target} (Corrected Sentence)
-  \end{center}
-  \mair
-
-  \begin{figure}
-    \centering
-    \textit{There is no doubt, tracking systems have
-      brought many benefits in this information
-      age . }
-  \end{figure}
-
-  \begin{itemize}
-  \item 1st on BEA'11 grammar correction task \Cite{Daudaravicius2016}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-  \centerline{\textbf{Seq2Seq Applications:} \alert{Im2Markup} (Deng and Rush, 2016) }
-  
-  \air 
-
-  \begin{center}
-    \includegraphics[width=\textwidth]{math}
-  \end{center}
-  % \movie[width=\textwidth, height=4cm, poster, repeat]{}{Latex.mp4}
-  
-
-
-  \begin{figure}
-    \centering
-  \end{figure}
-
-  \centerline{\href[pdfnewwindow=true]{https://harvardnlp.github.io/seq2seq-talk/web/math.html}{[Latex Example]}}
-  \centerline{\href[pdfnewwindow=true]{http://lstm.seas.harvard.edu/latex}{[Project]}}
-\end{frame}
-
-
-\begin{frame}{}
-  \begin{center}
-    \structure{Sequence-to-Sequence}
-  \end{center}
-
-  \begin{itemize}
-  \item \alert<2>{Machine Translation} \Cite{kalchbrenner2013recurrent,sutskever2014sequence, Cho2014, bahdanau2014neural,luong15effective} 
-    \air
-
-   
-  \item Question Answering \Cite{Hermann2015} 
-  \item Conversation \Cite{Vinyals2015} \Cite{Serban2016}
-  \item Parsing \Cite{vinyals15grammar}
-  \item Speech \Cite{Chorowski2015,Chan2015}
-  \item Caption Generation \Cite{karpathy2015deep,Xu2015,Vinyals2015b}
-  \item Video-Generation \Cite{Srivastava2015a}
-  \item NER/POS-Tagging \Cite{Gillick2016}
-  \item Summarization \Cite{Rush2015} 
-    \air 
-
-  \end{itemize}  
-\end{frame}
-
-
-% \begin{frame}
-%   \centerline{\textbf{Seq2Seq Details}}
-%   \textbf{\structure{Train Objective}}: Given source-target pairs $(x, y_{1:T})$, minimize NLL of each word independently, conditioned on \textit{gold} history $y_{1:t-1}$
-% \begin{align*}
-% {\cal L}_{\text{NLL}}(\theta) = -\sum_{t} \log p(w_{t} = y_t | y_{1:t-1}, x; \theta) 
-% \end{align*}
-
-%   \air
-
-% \textbf{\alert{Test Objective}}:  Structured prediction
-%   \begin{align*}
-%   \hat{y}_{1:T} = \argmax_{w_{1:T}} \sum_{t} \log p(w_{t} | w_{1:t-1}, x; \theta)
-% \end{align*}
-% \begin{itemize}
-% \item Typical to approximate the $\argmax$ with beam-search
-% \end{itemize}
-% \end{frame}
-
-% \begin{frame}
-%   \begin{center}
-%     \textbf{Interpreting RNNs}
-%   \end{center}
-% \end{frame}
-
-
-
-% \begin{frame}
-%   \centerline{\structure{This Talk}}
-%   \air 
-%   \air
-
-%   \begin{itemize}
-%   \item How can we \textbf{interpret} these learned hidden representations? 
-%     \air 
-
-    
-
-%   \item  How should we \textbf{train} these style of models? 
-%     \air 
-%   \item  How can we \textbf{shrink} these models for practical applications? 
-%   \end{itemize}
-% \end{frame}
-
-
-% \begin{frame}
-%   \centerline{\structure{This Talk}}
-%   \air 
-%   \air
-
-%   \begin{itemize}
-%   \item How can we \textbf{interpret} these learned hidden representations? 
-
-%     \begin{center}
-%       \alert{LSTMVis}   
-%       \href[pdfnewwindow=true]{https://lstm.seas.harvard.edu/}{lstm.seas.harvard.edu}
-
-%       \Cite{Strobelt2016}
-
-%       \includegraphics[width=2cm]{hen}
-%     \end{center}
-
-
-%     \air 
-
-    
-
-%   \item  \textcolor{gray}{How should we \textbf{train} these style of models? \Cite{Wiseman2016a}}
-%     \air 
-%   \item  \textcolor{gray}{How can we \textbf{shrink} these models for practical applications? \Cite{Kim2016a}}
-%   \end{itemize}
-% \end{frame}
-
-\section{Interpretation}
-
-\begin{frame}
-  \begin{center}
-    \textbf{Interpreting RNNs}
-  \end{center}
-\end{frame}
-
-
-% \begin{frame}
-%   \air 
-%   \includegraphics[width=\textwidth,trim={0 0 0 19.5cm},clip]{filters}
-%   \begin{center}
-%      \Cite{DBLP:conf/eccv/ZeilerF14}
-%   \end{center}
-% \end{frame}
-
-% \begin{frame}
-%   \begin{frame}
-%   \begin{center}
-%     \includegraphics[width=\textwidth]{lstm1}
-
-%     {\footnotesize (Karpathy et al, 2015)}
-%   \end{center}
-
-%     % \caption{Xu et al (2015)}  
-% \end{frame}
-
-\begin{frame}
-  \air 
-  \includegraphics[width=\textwidth,trim={0 0 0 19.5cm},clip]{filters}
-  \begin{center}
-     \Cite{DBLP:conf/eccv/ZeilerF14}
-  \end{center}
-\end{frame}
-
-
-\begin{frame}
-  % \begin{frame}
-  \centerline{Vector-Space RNN Representation}
-  \begin{center}
-    \includegraphics[height=5cm]{lstmrep}
-  \begin{center}
-    \includegraphics[width=11cm]{rnn}
-  \end{center}
-  \end{center}
-\end{frame}
-
-
-\begin{frame}
-  % \begin{frame}
-  \begin{center}
-    \includegraphics[width=\textwidth]{lstm1}
-4
-     \Cite{karpathy2015visualizing}
-    % {\footnotesize (Karpathy et al, 2015)}
-  \end{center}
-    % \caption{Xu et al (2015)}  
-\end{frame}
-
-\begin{frame}
-  \centerline{\alert{Example 1}: Synthetic (Finite-State) Language}
-  \air
-
-  \begin{center}
-    \includegraphics[width=9cm]{parenlang}
-  \end{center}
-  \mair
-
-  \begin{itemize}
-  \item Numbers are randomly generated, must match nesting level.
-    \air
-
-  \item Train a predict-next-word language model (decoder-only).
-  \end{itemize}
-    \[ p(w_t | w_1, \ldots, w_{t-1}) \] 
-  
-\air
-  \centerline{\href[pdfnewwindow=true]{http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=00parens&source=states::states2&pos=150}{[Parens Example]}}
-\end{frame}
-
-
-\begin{frame}
-  \centerline{\alert{Example 2}: Real Language}
-  \air
-
-  \begin{description}
-  \item[alphabet:] all english words
-  \item[corpus:] Project Gutenberg Children's books 
-  \end{description}
-  % \begin{center}
-  %   \includegraphics[width=9cm]{parenlang}
-  % \end{center}
-
-  \begin{itemize}
-  % \item 
-  %   \air
-
-  \item Train a predict-next-word language model (decoder-only).
-
-  
-  \end{itemize}
-    \[ p(w_t | w_1, \ldots, w_{t-1}) \] 
-
-\air
-  \centerline{ \href[pdfnewwindow=true]{http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=05childbook&source=states::states1&pos=100}{[LM Example]}}
-\end{frame}
-
-
-\begin{frame}
-  \centerline{\alert{Example 3}: Seq2Seq Encoder}
-  \air
-
-  \begin{description}
-  \item[alphabet:] all english words
-  \item[corpus:]  Summarization
-  \end{description}
-  % \begin{center}
-  %   \includegraphics[width=9cm]{parenlang}
-  % \end{center}
-
-  \begin{itemize}
-  % \item 
-  %   \air
-
-  \item Train a full seq2seq model, examine \textit{encoder} LSTM.
-  
-  \end{itemize}
-
-
-\air
-  \centerline{ \href[pdfnewwindow=true]{http://lstm.seas.harvard.edu/client/pattern_finder.html?data_set=20autoencoder&source=states::states2&pos=100}{[Summarization Example]}}
-\end{frame}
-% \begin{frame}
-%   \centerline{\structure{This Talk}}
-%   \air 
-%   \air
-
-%   \begin{itemize}
-%   \item \textcolor{gray}{How can we \textbf{interpret} these learned hidden representations? \Cite{Strobelt2016}}
-%     \air 
-%   \item  How should we \textbf{train} these style of models? 
-%     \air 
-
-%     \begin{center}
-%       \alert{Sequence-to-Sequence Learning as Beam-Search
-%         Optimization}
-     
-%       \Cite{Wiseman2016a}
-
-%       \includegraphics[width=2cm]{sam}
-%     \end{center}
-
-
-%     \air 
-%   \item \textcolor{gray}{ How can we \textbf{shrink} these models for practical applications \Cite{Kim2016a}? }
-%   \end{itemize}
-% \end{frame}
-
-
-\begin{frame}
-  \begin{center}
-    \textbf{Future Work}
-  \end{center}
-
-  \begin{center}
-
-\includegraphics[width=5cm]{phonemt}
-  \end{center}
-
-  \href[pdfnewwindow=true]{https://harvardnlp.github.io/seq2seq-talk/transfast.gif}{[App]}
-
 \end{frame}
 
 \begin{frame}
