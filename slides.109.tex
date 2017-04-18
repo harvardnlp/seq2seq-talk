@@ -23,6 +23,7 @@
 \usepackage{tikz,etoolbox}
 \usepackage{tikz,amsmath,siunitx}
 \usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks}
+\usepackage{tikz-qtree}
 \newcommand{\softmax}{\mathrm{softmax}}
 \usepackage[normalem]{ulem}
 \newcommand\tst{% thick strike through  %% from http://tex.stackexchange.com/questions/134088/mis-alignment-of-columns-in-tabular-environment-when-using-ulem-and-beamer
@@ -222,6 +223,12 @@
 
 \begin{frame}
   \titlepage
+\end{frame}
+
+\begin{frame}
+  \begin{center}
+    \includegraphics[width=12cm]{nytai}
+  \end{center}
 \end{frame}
 
 \begin{frame}
@@ -566,6 +573,8 @@ Steps:
   \end{itemize}
 \end{frame}
 
+
+
 % \begin{frame}{Word Embeddings}
   
 % \end{frame}
@@ -837,13 +846,70 @@ Steps:
   \end{center}
 \end{frame}
 
+\begin{frame}{Recurrent Neural Networks}
+  \textbf{Main Idea:} Build neural networks that are deep \textit{in time.}
 
-\begin{frame}{RNN: Overview}
+  \begin{itemize}
+  \item   Deep MLP/CNN: Stack multiple non-linear network units on-top of 
+    input. Learn richer feature representations. 
+
+  \item RNN: Use a non-linear transformations based on each input in a time-series.
+    
+  \end{itemize}
+
+\end{frame}
+\begin{frame}{RNN versus Deep Convolution}
+  \begin{columns}
+    \column{0.5\textwidth}
+
+    \begin{center}
+      \textbf{Convolution}
+      \air
+
+      \Tree [ .$NN_{Conv}$ [ .$Pool$ [ .$NN_{Conv}$ $\boldx_1$ $\boldx_2$ $\ldots$
+      $\boldx_n$ ] ] ] 
+    \end{center}
+    \column{0.5\textwidth}
+
+    \begin{center}
+      \textbf{RNN}
+      \air 
+
+      \Tree [ .$h_n$ [ .$\ldots$ [ .$h_3$ [ .$h_2$ [ .$h_1$ $h_0$ $\boldx_1$ ]
+      $\boldx_2$ ] $\boldx_3$ ] $\ldots$ ] $\boldx_n$ ]
+    \end{center}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{RNN Mathematically}
+
+
+  Let $h_0 \gets 0$, 
+  \[ h_1 \gets \textbf{RNN}(h_{0}, \boldx_1;\theta) \] 
+  \[ h_2 \gets \textbf{RNN}(h_{1}, \boldx_2;\theta) \] 
+  \[ h_3 \gets \textbf{RNN}(h_{2}, \boldx_3;\theta) \] 
+  \centerline{$\vdots$}
+  \[ h_n \gets \textbf{RNN}(h_{n-1}, \boldx_n;\theta) \] 
+  
+  Where RNN is a neural network layer with the same weights $\theta$ applied 
+  at each time step, for instance: 
+  
+  \[ \textbf{RNN}(h, \boldx) = \tanh(\boldW^a h + \boldW^{b} x ) \] 
+
+\end{frame}
+
+
+% \begin{frame}
+  
+% \end{frame}
+
+\begin{frame}{Why RNN?}
   
   \begin{itemize}
-  \item Most successful deep learning model for language. 
-    
-  \item Deep over ``time''.  
+  \item Get a single hidden vector for each time step. 
+  \item Vector can learn to capture important properties of the previous inputs.  
+  \item May allow us to make prediction based on history.
   \end{itemize}
 \end{frame}
 
@@ -853,62 +919,171 @@ Steps:
 %   \end{center}
 % \end{frame}
 
+\begin{frame}%{Deep Learning Toolbox}
+  \begin{center}
+    \alert{RNN For Language Modeling}
+    \air 
+  \end{center}
+  \begin{center}
+    \begin{tabular}{cclll}
+      \structure{Embeddings} & & words &$\Rightarrow$& word vectors \\\\
+      % \structure{Convolutions} &&  feature n-grams & $\Rightarrow$& dense features  \\\\
+
+      \structure{RNNs} & & word vectors & $\Rightarrow$ & hidden states  \\\\
+      \structure{Softmax} & & hidden states & $\Rightarrow$ & word prediction \\
+    \end{tabular}
+  \end{center}
+
+\end{frame}
+
+
+\begin{frame}{Words Embeddings}
+  \begin{center}
+    \includegraphics[width=7cm]{emb}
+  \end{center}
+  \begin{itemize}
+  \item Map words to vector space, just as before. 
+  \end{itemize}
+
+\end{frame}
+
 \begin{frame}{RNN}
   \begin{center}
     \includegraphics[width=11cm]{rnn}
   \end{center}  
-\end{frame}
-
-\begin{frame}
-  RNN()
-\end{frame}
-
-
-
-\begin{frame}
-  \begin{center}
-    \alert{Seq2Seq Neural Network Toolbox}
-    \air 
-  \end{center}
-  \begin{center}
-    \begin{tabular}{cclll}
-      \structure{Embeddings} & & sparse features &$\Rightarrow$& dense features \\\\
-      \structure{RNNs} & & feature sequences & $\Rightarrow$ &dense features \\\\
-      \structure{Softmax} & & dense features & $\Rightarrow$ & discrete predictions \\
-    \end{tabular}
-  \end{center}
-\end{frame}
-
-
-\begin{frame}
-  \begin{center}
-    \begin{tabular}{cclll}
-      \structure{RNNs/LSTMs} & & feature sequences & $\Rightarrow$ &dense features \\\\
-    \end{tabular}
-  \end{center}
-
-
-  \begin{center}
-    \includegraphics[width=11cm]{rnn}
-  \end{center}  
+  \begin{itemize}
+  \item Apply recurrent neural network over vector space of words to create hidden states.
+  \end{itemize}
 \end{frame}
 
 
 
-\begin{frame}
+
+\begin{frame}{Softmax}
   \begin{center}
-    \begin{tabular}{cclll}
-      \structure{LM/Softmax} & & dense features & $\Rightarrow$ & discrete predictions \\
-    \end{tabular}
-    \air 
 
     \includegraphics[width=0.8\textwidth]{rnnlm5}
   \end{center}
-  \[ p(w_t | w_1, \ldots, w_{t-1}; \theta) = \text{softmax}(\mathbf{W}_{out} \mathbf{h}_{t-1} + \mathbf{b}_{out}) \] 
 
-  \[ p(w_{1:T} ) = \prod_{t} p(w_t | w_1, \ldots, w_{t-1}) \] 
+  \begin{itemize}
+  \item Compute softmax over all possible next words to predict.
+  \end{itemize}
+  \[  p(w_t \given w_1, \ldots, w_{t-1}) = \sigma(\mathbf{W} \mathbf{h}_{t-1} + \mathbf{b})_w \] 
+
+  % \[ p(w_{1:T} ) = \prod_{t} p(w_t | w_1, \ldots, w_{t-1}) \] 
     % \caption{Xu et al (2015)}  
 \end{frame}
+
+\begin{frame}{How do we learn the model?}
+  \begin{itemize}
+  \item RNNs are trained with SGD and Backprop (surprise)
+    \air 
+
+  \item Implementation can be complicated, mainly for efficiency.
+    \air
+
+  \item Called \textit{backpropagation through time} (BPTT).
+  \end{itemize}
+\end{frame}
+
+% \begin{frame}{Training Acceptors}
+%   Training process:
+%   \begin{itemize}
+%   \item Run forward propagation.
+%     \air 
+%   \item Run backward propagation.
+%     \air
+
+%   \item Update all weights
+%   \end{itemize}
+
+%   Weights $\theta$ of $R$ are shared:
+% \end{frame}
+
+\begin{frame}{BPTT (One Word)}
+  \begin{itemize}
+  \item \alert{Run forward propagation}.
+  \item \structure{Run backward propagation}.
+  \item Update all weights (shared)
+  \end{itemize}
+
+    \begin{center}
+      \scalebox{0.7}{\Tree [  .\alert<5->{\structure<6->{$\hat{\boldy}$}} [ .$\alert<4->{\structure<7->{h_n}}$ [ .$\ldots$ [ .$\alert<3->{\structure<8->{h_3}}$ [ .$\alert<2->{\structure<9->{h_2}}$ [ .$\alert<1->{\structure<10->{h_1}}$ $h_0$ $\boldx_1$ ]
+      $\boldx_2$ ] $\boldx_3$ ] $\ldots$ ] $\boldx_n$ ] ]}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Issues}
+  \begin{itemize}
+  \item Can be inefficient, but batch/GPUs help.
+    \air
+
+  \item Model is much deeper than previous approaches.
+    \begin{itemize}
+    \item This matters a lot, focus of next class.
+    \end{itemize}
+    \air
+
+  \item Variable-size model for each sentence.
+    \begin{itemize}
+    \item Have to be a bit more clever in Keras.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Application of RNNs}
+  RNN models have lead to a \textbf{major} increase in the accuracy of 
+  language models.
+
+  \begin{center}
+    Why did this matter?
+  \end{center}
+  \pause
+
+  \begin{center}
+    \includegraphics<2>[width=9cm]{drumpf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Language Modeling Applications}
+
+  \begin{columns}    
+    \begin{column}{0.5\textwidth}
+  \begin{itemize}
+  \item Speech Recognition
+  \item Machine Translation
+  \item Summarization
+  \item Dialogue
+  \item Soft Keyboards
+  \item Word Correction
+  \item Text Simplification
+  \item $\ldots$
+  \end{itemize}
+  \end{column}
+
+
+    \begin{column}{0.5\textwidth}
+      \vspace{2cm}
+     
+      \includegraphics[width=5cm]{siri}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}{Next Class}
+  
+  \begin{itemize}
+  \item Easier to train variants of RNN (Long-Short Term Memory)
+  \item LSTMs for Machine Translation 
+  \item Many Cool Applications...
+  \end{itemize}
+
+\end{frame}
+
+
+
+
 
 \begin{frame}
 \begin{center}
