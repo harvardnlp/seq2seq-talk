@@ -146,9 +146,7 @@
 \title[]{The State of Neural Summarization}
 
 
-\author[Alexander Rush]{Alexander Rush  (@harvardnlp) \\  
-{\scriptsize  (with  Yoon Kim, Sam Wiseman, Hendrik Strobelt, Yuntian Deng, Allen Schmaltz) } \\
-} 
+\author[Alexander Rush]{Alexander Rush } 
 
 \institute[Harvard SEAS]{ \\
   \begin{center}
@@ -497,15 +495,16 @@
   \begin{itemize}
   \item Novel method for attention at ICLR 2017.
   \item Allows probabilistic inference (CRF) within sequence-to-sequence.
-  \item Applied to Japanese translation.
+  \item Applied to Japanese translation, question answering.
   \end{itemize}
-  
   \begin{center}
-    \includegraphics[width=10cm]{structattn}
+    \includegraphics[width=7cm]{facts}
   \end{center}
+  
 \end{frame}
 
 \begin{frame}{Proposed Project: Structured Attention for Summarization}
+  \structure{Aim:} Summarize longer documents and maintaining information.
   \begin{itemize}
   \item Use structured attention with reinforcement learning to 
     do neural document summarization.
@@ -514,6 +513,10 @@
   \item Combined with pointer network, allows phrasal selection 
     in addition to abstractive embellishment.
   \end{itemize}
+  \begin{center}
+    \includegraphics[width=10cm]{structattn}
+  \end{center}
+
 \end{frame}
 
 
@@ -541,6 +544,10 @@
     \item Methodology: Use pointer network to select words and phrases, loss function 
       to ensure coherent generation.
   \end{itemize}
+
+  \begin{center}
+    \includegraphics[width=6cm]{booking}
+  \end{center}
 \end{frame}
 
 % \begin{frame}
