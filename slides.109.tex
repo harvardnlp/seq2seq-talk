@@ -10,7 +10,7 @@
 \newcommand{\demb}{{d_{\mathrm{emb}}}}
 
 \renewenvironment{itemize}{\tempone\addtolength{\itemsep}{0.5\baselineskip}}{\temptwo}
-\usepackage{beamerthemeshadow}
+% \usepackage{beamerthemeshadow}
 \usepackage{tikz}
 \usepackage{bbm}
 \usepackage{hyperref}
@@ -23,6 +23,7 @@
 \usepackage{tikz,etoolbox}
 \usepackage{tikz,amsmath,siunitx}
 \usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks}
+\usepackage{tikz-qtree}
 \newcommand{\softmax}{\mathrm{softmax}}
 \usepackage[normalem]{ulem}
 \newcommand\tst{% thick strike through  %% from http://tex.stackexchange.com/questions/134088/mis-alignment-of-columns-in-tabular-environment-when-using-ulem-and-beamer
@@ -95,11 +96,12 @@
 \newcommand{\hc}{\boldh_{\uc}}
 \newcommand{\cb}{\boldb_{\mathrm{\uc}}}
 \newcommand{\cW}{\boldW_{\mathrm{\uc}}}
+% \newcommand{\tanh}{\mathrm{tanh}}
 
 \newcommand{\ha}{\boldh_{\ua}}
 \newcommand{\hp}{\boldh_{\up}}
 
-\newcommand{\boldx}{\mathbf{x}}
+% \newcommand{\boldx}{\mathbf{x}}
 \newcommand{\boldy}{\mathbf{y}}
 
 % \newcommand{\hc}{\boldh_{\mathrm{c}}}
@@ -225,6 +227,12 @@
 
 \begin{frame}
   \begin{center}
+    \includegraphics[width=12cm]{nytai}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \begin{center}
     \textbf{Language Models}
   \end{center}
 \end{frame}
@@ -256,9 +264,9 @@
 
 \begin{frame}
 
-  \begin{center}
-    \includegraphics[width=6cm]{lena}
-  \end{center}
+  % \begin{center}
+  %   \includegraphics[width=6cm]{lena}
+  % \end{center}
 
   \air
   \only<1> {
@@ -387,6 +395,13 @@ Steps:
 
 \begin{frame}
   \begin{center}
+    \includegraphics[width=\textwidth]{polished}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}
+  \begin{center}
     \alert{Google 1T}
 
   \end{center}
@@ -431,13 +446,13 @@ Steps:
 
 \begin{frame}{Intuition: N-Gram Issues}
   
-  In training we might see, 
+  Training: 
 
   \begin{center}
     the arizona corporations commission \alert{authorized}
   \end{center}
 
-  But at test we see, 
+  Test: 
   \begin{center}
     the colorado businesses organization \alert{\_\_\_}
   \end{center}
@@ -457,15 +472,23 @@ Steps:
 
 \begin{frame}{Alternative Approach}
 
-  Consider now using neural networks for this prediction.
+  Treat as multi-class prediction!
+
+  \air
+
+  Let $\mcV$ be all possible words in the language (English 10,000 - 100,000). 
+  Predict over words.
+
 \air
 
-Two important ideas that we have seen so far.
+ Important ideas that you have seen .
 
   \begin{enumerate}
-  \item Softmax for multiclass prediction of next word (out of $\mcV$ )
-  \item  Adaptive basis to learn representation of past words
 
+
+  \item \textbf{Neural Network} to learn feature representation. 
+  \item \textbf{Softmax} for multiclass prediction of next word (out of $\mcV$ )
+  \item \textbf{Cross-entropy} loss as training objective.
   \end{enumerate}
 \end{frame}
 
@@ -478,41 +501,20 @@ Two important ideas that we have seen so far.
 
 
   \begin{itemize}
-  \item Sample pairs are $(\boldx, \boldy)$.
+  \item Training data is pairs are $(w_t, \{w_{t-3}, w_{t-2}, w_{t-1}\})$.
 
   \item Input is sentence up until the blank, output is next word
     prediction.
   \item Challenging multi-class prediction problem, feature representation matters.
+
     \pause
-  \item Begin by considering count-based categorical prediction models:
-    \[ p(\boldy | \boldx) \] 
+    Neural Network 
+
+    \[ p(w_t | \{w_{t-3}, w_{t-2}, w_{t-1}\} ) = \sigma(z)_{w_t} \]
+    where 
+    \[z = NN(\{w_{t-3}, w_{t-2}, w_{t-1}\}) \]
   \end{itemize}
 \end{frame}
-
-
-\begin{frame}{Word Representation}
-  \begin{itemize}
-  \item We say the vocabulary of the language is $|\mcV|$ 
-
-  \item In practice $|\mcV|$ is 10,000 - 100,000 unique words      
-
-  \item Each word has an associated numerical index.
-
-  \item We represent each word as a one-hot vector $C_k$ where 
-    $k \in \{1, \ldots |\mcV|\}$  
-
-    \[ [0, 0, 0, 0, 0, 1, \ldots, 0 ]\]   
-  \item For this problem, both input and output will use one-hot $C_k$ vectors.
-  \end{itemize}
-
-\end{frame}
-
-
-% \begin{frame}
-%   \begin{center}
-%     \includegraphics[width=5cm]{brain}
-%   \end{center}
-% \end{frame}
 
 \begin{frame}
   A \structure{neural network} is a \alert{function approximator}
@@ -526,14 +528,14 @@ Two important ideas that we have seen so far.
   \pause
 % \begin{frame}{Neural Network}
 
-  \[NN_{MLP1}(\boldx) =  \boldW^2 tanh(\boldW^1 \boldx + \boldb^1) + \boldb^2\]
+  \[NN_{MLP1}(\boldx) =  \boldW^2 \tanh(\boldW^1 \boldx + \boldb^1) + \boldb^2\]
   \begin{itemize}
   \item $\boldx$; input
 
   \item $\boldW, \boldb$; parameters
   % \item $\boldW^1 \in \reals^{\din \times \dhid}, \boldb^1 \in \reals^{1 \times \dhid}$; first affine transformation
   % \item $\boldW^2 \in \reals^{\dhid \times \dout}, \boldb^2 \in \reals^{1 \times \dout}$; second affine transformation
-  \item $tanh$ is \textit{non-linearity} 
+  \item $\tanh$ is \textit{non-linearity} 
   % \item $g(\boldx\boldW^1 + \boldb^1)$ is the \textit{hidden layer}
   \end{itemize}
   \begin{figure}
@@ -543,17 +545,47 @@ Two important ideas that we have seen so far.
 
 \end{frame}
 
-\begin{frame}
-  \begin{center}
-    \begin{tabular}{cclll}
-      \structure{Embeddings} & & sparse features & $\Rightarrow$ & dense features \\\\
-    \end{tabular}
-  \end{center}
 
+
+\begin{frame}{Word Representation}
+  \begin{itemize}
+  \item How can a word be fed into a neural network?
+
+  \item Each word has an associated numerical index, not like images or 
+    sounds.
+
+  \item Need a way to know if two words are ``close'' to each other 
+    for the network. 
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Words Embeddings}
   \begin{center}
     \includegraphics[width=7cm]{emb}
   \end{center}
+  \begin{itemize}
+  \item Associate each words with an \textit{embedding} vector, e.g. in 50 dimensions. 
+  \item Store this in a big table. 
+  \item ``Move'' the vectors around based on backpropagation, i.e. if the model 
+    makes the wrong prediction the vector associated with a word is updated.
+  \end{itemize}
 \end{frame}
+
+
+
+% \begin{frame}{Word Embeddings}
+  
+% \end{frame}
+
+% \begin{frame}
+%   \begin{center}
+%     \includegraphics[width=5cm]{brain}
+%   \end{center}
+% \end{frame}
+
+
 
 
 
@@ -576,176 +608,176 @@ Two important ideas that we have seen so far.
 
 
 
-\begin{frame}{Softmax}
+% \begin{frame}{Softmax}
   
-\end{frame}
+% \end{frame}
 
 
 
-\begin{frame}
-  \begin{center}
+% \begin{frame}
+%   \begin{center}
 
 
-  \begin{tikzpicture}
-    \node(aa)[draw, circle]{$x_1$};
-    \node(ab)[below of =  aa, draw, circle]{$x_2$};
-    \node(ac)[below of = ab, draw,circle]{$x_3$};
-    \node(ad)[below of = ac]{$\vdots$};
-    \node(ae)[below of =  ad, draw, circle]{$x_{\din}$};
+%   \begin{tikzpicture}
+%     \node(aa)[draw, circle]{$x_1$};
+%     \node(ab)[below of =  aa, draw, circle]{$x_2$};
+%     \node(ac)[below of = ab, draw,circle]{$x_3$};
+%     \node(ad)[below of = ac]{$\vdots$};
+%     \node(ae)[below of =  ad, draw, circle]{$x_{\din}$};
 
 
-    \node(ba)[xshift= 2cm, yshift=-0.5cm, right of = aa, draw, circle]{$h_1$};
-    \node(bb)[below of =  ba, draw, circle]{$h_2$};
-    \node(bc)[below of = bb]{$\vdots$};
+%     \node(ba)[xshift= 2cm, yshift=-0.5cm, right of = aa, draw, circle]{$h_1$};
+%     \node(bb)[below of =  ba, draw, circle]{$h_2$};
+%     \node(bc)[below of = bb]{$\vdots$};
 
-    \node(bd)[below of =  bc, draw, circle]{$h_{\dhid}$};
+%     \node(bd)[below of =  bc, draw, circle]{$h_{\dhid}$};
 
-    \path[draw] (aa) -- (ba);
-    \path[draw] (aa) -- (bb);
-    \path[draw] (aa) -- (bd);
+%     \path[draw] (aa) -- (ba);
+%     \path[draw] (aa) -- (bb);
+%     \path[draw] (aa) -- (bd);
 
-    \path[draw] (ab) -- (ba);
-    \path[draw] (ab) -- (bb);
-    \path[draw] (ab) -- (bd);
+%     \path[draw] (ab) -- (ba);
+%     \path[draw] (ab) -- (bb);
+%     \path[draw] (ab) -- (bd);
 
-    \path[draw] (ac) -- (ba);
-    \path[draw] (ac) -- (bb);
-    \path[draw] (ac) -- (bd);
+%     \path[draw] (ac) -- (ba);
+%     \path[draw] (ac) -- (bb);
+%     \path[draw] (ac) -- (bd);
 
-    \path[draw] (ae) -- (ba);
-    \path[draw] (ae) -- (bb);
-    \path[draw] (ae) -- (bd);
-
-
-    \node(ca)[xshift= 2cm, yshift=0.5cm, right of = ba, draw, circle]{$z_1$};
-    \node(cb)[below of =  ca, draw, circle]{$z_2$};
-    \node(cc)[below of =  cb, draw, circle]{$z_3$};
-    \node(cd)[below of = cc]{$\vdots$};
-    \node(ce)[below of =  cd, draw, circle]{$z_{\dout}$};
+%     \path[draw] (ae) -- (ba);
+%     \path[draw] (ae) -- (bb);
+%     \path[draw] (ae) -- (bd);
 
 
-    \path[draw] (ba) -- (ca);
-    \path[draw] (ba) -- (cb);
-    \path[draw] (ba) -- (cc);
-    \path[draw] (ba) -- (ce);
-
-    \path[draw] (bb) -- (ca);
-    \path[draw] (bb) -- (cb);
-    \path[draw] (bb) -- (cc);
-    \path[draw] (bb) -- (ce);
-
-    \path[draw] (bd) -- (ca);
-    \path[draw] (bd) -- (cb);
-    \path[draw] (bd) -- (cc);
-    \path[draw] (bd) -- (ce);
+%     \node(ca)[xshift= 2cm, yshift=0.5cm, right of = ba, draw, circle]{$z_1$};
+%     \node(cb)[below of =  ca, draw, circle]{$z_2$};
+%     \node(cc)[below of =  cb, draw, circle]{$z_3$};
+%     \node(cd)[below of = cc]{$\vdots$};
+%     \node(ce)[below of =  cd, draw, circle]{$z_{\dout}$};
 
 
-  \end{tikzpicture}
-  \end{center}
-\end{frame}
+%     \path[draw] (ba) -- (ca);
+%     \path[draw] (ba) -- (cb);
+%     \path[draw] (ba) -- (cc);
+%     \path[draw] (ba) -- (ce);
+
+%     \path[draw] (bb) -- (ca);
+%     \path[draw] (bb) -- (cb);
+%     \path[draw] (bb) -- (cc);
+%     \path[draw] (bb) -- (ce);
+
+%     \path[draw] (bd) -- (ca);
+%     \path[draw] (bd) -- (cb);
+%     \path[draw] (bd) -- (cc);
+%     \path[draw] (bd) -- (ce);
 
 
-\begin{frame}{Interpretation of Network}
+%   \end{tikzpicture}
+%   \end{center}j
+% \end{frame}
 
-  \begin{itemize}
-  \item Notation input $\reals^m$ and basis $\reals^d$.  
-  \item Unlike other problems here $m$ is large $|\mcV|$ (10,000-100,000)
-  \item But $d$ can be much smaller. Why is that?  
+
+% \begin{frame}{Interpretation of Network}
+
+%   \begin{itemize}
+%   \item Notation input $\reals^m$ and basis $\reals^d$.  
+%   \item Unlike other problems here $m$ is large $|\mcV|$ (10,000-100,000)
+%   \item But $d$ can be much smaller. Why is that?  
   
-  \air
-  \[\boldW^1 \begin{bmatrix}0 \\ 0\\ 1 \\ \vdots \\0 \\\end{bmatrix} = \boldW^1_{\star, j} \] 
+%   \air
+%   \[\boldW^1 \begin{bmatrix}0 \\ 0\\ 1 \\ \vdots \\0 \\\end{bmatrix} = \boldW^1_{\star, j} \] 
       
-  \item The output of this layer $\boldW^1_{\star, j} \in \reals^d$ is called a \textit{word vector}. 
-  \end{itemize}
-\end{frame}
+%   \item The output of this layer $\boldW^1_{\star, j} \in \reals^d$ is called a \textit{word vector}. 
+%   \end{itemize}
+% \end{frame}
 
-\begin{frame}{Sparse versus Distributed Representation}
-  \begin{itemize}
-  \item Internally we have now seen two representations of words 
+% \begin{frame}{Sparse versus Distributed Representation}
+%   \begin{itemize}
+%   \item Internally we have now seen two representations of words 
 
-  \item $\boldx$ Sparse:  Very high dimensional, easy to get back the original word, 
-    but feature weights are not shared between words. $\boldw_j$ is weight for 
-    one word. 
-    \[ [0, 0, 0, 1, \ldots 0] \] 
-    \pause 
+%   \item $\boldx$ Sparse:  Very high dimensional, easy to get back the original word, 
+%     but feature weights are not shared between words. $\boldw_j$ is weight for 
+%     one word. 
+%     \[ [0, 0, 0, 1, \ldots 0] \] 
+%     \pause 
 
-  \item $\bphi(\boldx)$ Distributed:  Low dimensional but dense, each dimension is a feature of the 
-    word, $\boldw_j$ is weight for basis function. 
-    \[ [0.23, 0.32, 0.109, -0.1231, \ldots, 0.402] \] 
+%   \item $\bphi(\boldx)$ Distributed:  Low dimensional but dense, each dimension is a feature of the 
+%     word, $\boldw_j$ is weight for basis function. 
+%     \[ [0.23, 0.32, 0.109, -0.1231, \ldots, 0.402] \] 
 
-  \end{itemize}
-\end{frame}
-
-
+%   \end{itemize}
+% \end{frame}
 
 
-\begin{frame}
-  \begin{center}
-    \textbf{Neural Networks for Language}
-  \end{center}
+
+
+% \begin{frame}
+%   \begin{center}
+%     \textbf{Neural Networks for Language}
+%   \end{center}
   
-  \begin{itemize}
-  \item $\boldx$; previous words 
-  \item $NN(\boldx)$; score for next word  
-  \end{itemize}
-  \[NN_{MLP1}(\boldx) =  \boldW^2 \sigma(\boldW^1 \boldx + \boldb^1) + \boldb^2\]
+%   \begin{itemize}
+%   \item $\boldx$; previous words 
+%   \item $NN(\boldx)$; score for next word  
+%   \end{itemize}
+%   \[NN_{MLP1}(\boldx) =  \boldW^2 \sigma(\boldW^1 \boldx + \boldb^1) + \boldb^2\]
 
-  \begin{center}
-    \begin{tikzpicture}
-    \node(aa)[draw, circle]{$x_1$};
-    \node(ab)[below of =  aa, draw, circle]{$x_2$};
-    \node(ac)[below of = ab, draw,circle]{$x_3$};
-    \node(ad)[below of = ac]{$\vdots$};
-    \node(ae)[below of =  ad, draw, circle]{$x_{n}$};
-
-
-    \node(ba)[xshift= 2cm, yshift=-0.5cm, right of = aa, draw, circle]{$h_1$};
-    \node(bb)[below of =  ba, draw, circle]{$h_2$};
-    \node(bc)[below of = bb]{$\vdots$};
-
-    \node(bd)[below of =  bc, draw, circle]{$h_{d}$};
-
-    \path[draw] (aa) -- (ba);
-    \path[draw] (aa) -- (bb);
-    \path[draw] (aa) -- (bd);
-
-    \path[draw] (ab) -- (ba);
-    \path[draw] (ab) -- (bb);
-    \path[draw] (ab) -- (bd);
-
-    \path[draw] (ac) -- (ba);
-    \path[draw] (ac) -- (bb);
-    \path[draw] (ac) -- (bd);
-
-    \path[draw] (ae) -- (ba);
-    \path[draw] (ae) -- (bb);
-    \path[draw] (ae) -- (bd);
+%   \begin{center}
+%     \begin{tikzpicture}
+%     \node(aa)[draw, circle]{$x_1$};
+%     \node(ab)[below of =  aa, draw, circle]{$x_2$};
+%     \node(ac)[below of = ab, draw,circle]{$x_3$};
+%     \node(ad)[below of = ac]{$\vdots$};
+%     \node(ae)[below of =  ad, draw, circle]{$x_{n}$};
 
 
-    \node(ca)[xshift= 2cm, yshift=0.5cm, right of = ba, draw]{word 1};
-    \node(cb)[below of =  ca, draw]{word 2};
-    \node(cc)[below of =  cb, draw]{word 3};
-    \node(cd)[below of = cc]{$\vdots$};
-    \node(ce)[below of =  cd, draw]{word n};
+%     \node(ba)[xshift= 2cm, yshift=-0.5cm, right of = aa, draw, circle]{$h_1$};
+%     \node(bb)[below of =  ba, draw, circle]{$h_2$};
+%     \node(bc)[below of = bb]{$\vdots$};
+
+%     \node(bd)[below of =  bc, draw, circle]{$h_{d}$};
+
+%     \path[draw] (aa) -- (ba);
+%     \path[draw] (aa) -- (bb);
+%     \path[draw] (aa) -- (bd);
+
+%     \path[draw] (ab) -- (ba);
+%     \path[draw] (ab) -- (bb);
+%     \path[draw] (ab) -- (bd);
+
+%     \path[draw] (ac) -- (ba);
+%     \path[draw] (ac) -- (bb);
+%     \path[draw] (ac) -- (bd);
+
+%     \path[draw] (ae) -- (ba);
+%     \path[draw] (ae) -- (bb);
+%     \path[draw] (ae) -- (bd);
 
 
-    \path[draw] (ba) -- (ca);
-    \path[draw] (ba) -- (cb);
-    \path[draw] (ba) -- (cc);
-    \path[draw] (ba) -- (ce);
+%     \node(ca)[xshift= 2cm, yshift=0.5cm, right of = ba, draw]{word 1};
+%     \node(cb)[below of =  ca, draw]{word 2};
+%     \node(cc)[below of =  cb, draw]{word 3};
+%     \node(cd)[below of = cc]{$\vdots$};
+%     \node(ce)[below of =  cd, draw]{word n};
 
-    \path[draw] (bb) -- (ca);
-    \path[draw] (bb) -- (cb);
-    \path[draw] (bb) -- (cc);
-    \path[draw] (bb) -- (ce);
 
-    \path[draw] (bd) -- (ca);
-    \path[draw] (bd) -- (cb);
-    \path[draw] (bd) -- (cc);
-    \path[draw] (bd) -- (ce);
-  \end{tikzpicture}
-\end{center}
-\end{frame}
+%     \path[draw] (ba) -- (ca);
+%     \path[draw] (ba) -- (cb);
+%     \path[draw] (ba) -- (cc);
+%     \path[draw] (ba) -- (ce);
+
+%     \path[draw] (bb) -- (ca);
+%     \path[draw] (bb) -- (cb);
+%     \path[draw] (bb) -- (cc);
+%     \path[draw] (bb) -- (ce);
+
+%     \path[draw] (bd) -- (ca);
+%     \path[draw] (bd) -- (cb);
+%     \path[draw] (bd) -- (cc);
+%     \path[draw] (bd) -- (ce);
+%   \end{tikzpicture}
+% \end{center}
+% \end{frame}
 
 
 
@@ -757,11 +789,15 @@ Two important ideas that we have seen so far.
    \end{center}
 \end{frame}
 
-\begin{frame}{Word Vector Properties}
-  
-  
 
+\begin{frame}{Notable Properties}
+  After applying PCA to word embeddings
+  \begin{center}
+    \includegraphics[width=8cm]{athletes}
+  \end{center}
 \end{frame}
+
+
 
 
 \begin{frame}{Modern Word Vectors}  
@@ -769,9 +805,39 @@ Two important ideas that we have seen so far.
 \end{frame}
 
 
+\begin{frame}{Using For Language Modeling}
+  Recall the definition of the softmax, with $z$ the representation 
+  of the context.
+
+  \[ \sigma(z)_j = \frac{e^{z_j}}{\sum_{k=1}^Ke^{z_{k}}}  \] 
+
+  \air
+
+  For language modeling $K$ is huge! Need to compute for the full
+  vocabulary.
+  \air
+
+  Became possible to do with refinement of GPUs.
+\end{frame}
+
 
 \begin{frame}{Problems With MLP Language Models}  
-  
+  MLP language models provide a way to learn 
+  representations of words.
+
+  \begin{itemize}
+  \item Can be trained as a standard neural network.
+  \item Allows us to learn words are similar. 
+  \end{itemize}
+
+  \air
+
+  Still have several \alert{issues}.
+
+  \begin{itemize}
+  \item Have to differentiate between locations (2 words back, 5 words back).
+  \item Only have a fixed amount of history. 
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -780,13 +846,70 @@ Two important ideas that we have seen so far.
   \end{center}
 \end{frame}
 
+\begin{frame}{Recurrent Neural Networks}
+  \textbf{Main Idea:} Build neural networks that are deep \textit{in time.}
 
-\begin{frame}{RNN: Overview}
+  \begin{itemize}
+  \item   Deep MLP/CNN: Stack multiple non-linear network units on-top of 
+    input. Learn richer feature representations. 
+
+  \item RNN: Use a non-linear transformations based on each input in a time-series.
+    
+  \end{itemize}
+
+\end{frame}
+\begin{frame}{RNN versus Deep Convolution}
+  \begin{columns}
+    \column{0.5\textwidth}
+
+    \begin{center}
+      \textbf{Convolution}
+      \air
+
+      \Tree [ .$NN_{Conv}$ [ .$Pool$ [ .$NN_{Conv}$ $\boldx_1$ $\boldx_2$ $\ldots$
+      $\boldx_n$ ] ] ] 
+    \end{center}
+    \column{0.5\textwidth}
+
+    \begin{center}
+      \textbf{RNN}
+      \air 
+
+      \Tree [ .$h_n$ [ .$\ldots$ [ .$h_3$ [ .$h_2$ [ .$h_1$ $h_0$ $\boldx_1$ ]
+      $\boldx_2$ ] $\boldx_3$ ] $\ldots$ ] $\boldx_n$ ]
+    \end{center}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{RNN Mathematically}
+
+
+  Let $h_0 \gets 0$, 
+  \[ h_1 \gets \textbf{RNN}(h_{0}, \boldx_1;\theta) \] 
+  \[ h_2 \gets \textbf{RNN}(h_{1}, \boldx_2;\theta) \] 
+  \[ h_3 \gets \textbf{RNN}(h_{2}, \boldx_3;\theta) \] 
+  \centerline{$\vdots$}
+  \[ h_n \gets \textbf{RNN}(h_{n-1}, \boldx_n;\theta) \] 
+  
+  Where RNN is a neural network layer with the same weights $\theta$ applied 
+  at each time step, for instance: 
+  
+  \[ \textbf{RNN}(h, \boldx) = \tanh(\boldW^a h + \boldW^{b} x ) \] 
+
+\end{frame}
+
+
+% \begin{frame}
+  
+% \end{frame}
+
+\begin{frame}{Why RNN?}
   
   \begin{itemize}
-  \item Most successful deep learning model for language. 
-    
-  \item Deep over ``time''.  
+  \item Get a single hidden vector for each time step. 
+  \item Vector can learn to capture important properties of the previous inputs.  
+  \item May allow us to make prediction based on history.
   \end{itemize}
 \end{frame}
 
@@ -796,62 +919,171 @@ Two important ideas that we have seen so far.
 %   \end{center}
 % \end{frame}
 
+\begin{frame}%{Deep Learning Toolbox}
+  \begin{center}
+    \alert{RNN For Language Modeling}
+    \air 
+  \end{center}
+  \begin{center}
+    \begin{tabular}{cclll}
+      \structure{Embeddings} & & words &$\Rightarrow$& word vectors \\\\
+      % \structure{Convolutions} &&  feature n-grams & $\Rightarrow$& dense features  \\\\
+
+      \structure{RNNs} & & word vectors & $\Rightarrow$ & hidden states  \\\\
+      \structure{Softmax} & & hidden states & $\Rightarrow$ & word prediction \\
+    \end{tabular}
+  \end{center}
+
+\end{frame}
+
+
+\begin{frame}{Words Embeddings}
+  \begin{center}
+    \includegraphics[width=7cm]{emb}
+  \end{center}
+  \begin{itemize}
+  \item Map words to vector space, just as before. 
+  \end{itemize}
+
+\end{frame}
+
 \begin{frame}{RNN}
   \begin{center}
     \includegraphics[width=11cm]{rnn}
   \end{center}  
-\end{frame}
-
-\begin{frame}
-  RNN()
-\end{frame}
-
-
-
-\begin{frame}
-  \begin{center}
-    \alert{Seq2Seq Neural Network Toolbox}
-    \air 
-  \end{center}
-  \begin{center}
-    \begin{tabular}{cclll}
-      \structure{Embeddings} & & sparse features &$\Rightarrow$& dense features \\\\
-      \structure{RNNs} & & feature sequences & $\Rightarrow$ &dense features \\\\
-      \structure{Softmax} & & dense features & $\Rightarrow$ & discrete predictions \\
-    \end{tabular}
-  \end{center}
-\end{frame}
-
-
-\begin{frame}
-  \begin{center}
-    \begin{tabular}{cclll}
-      \structure{RNNs/LSTMs} & & feature sequences & $\Rightarrow$ &dense features \\\\
-    \end{tabular}
-  \end{center}
-
-
-  \begin{center}
-    \includegraphics[width=11cm]{rnn}
-  \end{center}  
+  \begin{itemize}
+  \item Apply recurrent neural network over vector space of words to create hidden states.
+  \end{itemize}
 \end{frame}
 
 
 
-\begin{frame}
+
+\begin{frame}{Softmax}
   \begin{center}
-    \begin{tabular}{cclll}
-      \structure{LM/Softmax} & & dense features & $\Rightarrow$ & discrete predictions \\
-    \end{tabular}
-    \air 
 
     \includegraphics[width=0.8\textwidth]{rnnlm5}
   \end{center}
-  \[ p(w_t | w_1, \ldots, w_{t-1}; \theta) = \text{softmax}(\mathbf{W}_{out} \mathbf{h}_{t-1} + \mathbf{b}_{out}) \] 
 
-  \[ p(w_{1:T} ) = \prod_{t} p(w_t | w_1, \ldots, w_{t-1}) \] 
+  \begin{itemize}
+  \item Compute softmax over all possible next words to predict.
+  \end{itemize}
+  \[  p(w_t \given w_1, \ldots, w_{t-1}) = \sigma(\mathbf{W} \mathbf{h}_{t-1} + \mathbf{b})_w \] 
+
+  % \[ p(w_{1:T} ) = \prod_{t} p(w_t | w_1, \ldots, w_{t-1}) \] 
     % \caption{Xu et al (2015)}  
 \end{frame}
+
+\begin{frame}{How do we learn the model?}
+  \begin{itemize}
+  \item RNNs are trained with SGD and Backprop (surprise)
+    \air 
+
+  \item Implementation can be complicated, mainly for efficiency.
+    \air
+
+  \item Called \textit{backpropagation through time} (BPTT).
+  \end{itemize}
+\end{frame}
+
+% \begin{frame}{Training Acceptors}
+%   Training process:
+%   \begin{itemize}
+%   \item Run forward propagation.
+%     \air 
+%   \item Run backward propagation.
+%     \air
+
+%   \item Update all weights
+%   \end{itemize}
+
+%   Weights $\theta$ of $R$ are shared:
+% \end{frame}
+
+\begin{frame}{BPTT (One Word)}
+  \begin{itemize}
+  \item \alert{Run forward propagation}.
+  \item \structure{Run backward propagation}.
+  \item Update all weights (shared)
+  \end{itemize}
+
+    \begin{center}
+      \scalebox{0.7}{\Tree [  .\alert<5->{\structure<6->{$\hat{\boldy}$}} [ .$\alert<4->{\structure<7->{h_n}}$ [ .$\ldots$ [ .$\alert<3->{\structure<8->{h_3}}$ [ .$\alert<2->{\structure<9->{h_2}}$ [ .$\alert<1->{\structure<10->{h_1}}$ $h_0$ $\boldx_1$ ]
+      $\boldx_2$ ] $\boldx_3$ ] $\ldots$ ] $\boldx_n$ ] ]}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Issues}
+  \begin{itemize}
+  \item Can be inefficient, but batch/GPUs help.
+    \air
+
+  \item Model is much deeper than previous approaches.
+    \begin{itemize}
+    \item This matters a lot, focus of next class.
+    \end{itemize}
+    \air
+
+  \item Variable-size model for each sentence.
+    \begin{itemize}
+    \item Have to be a bit more clever in Keras.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Application of RNNs}
+  RNN models have lead to a \textbf{major} increase in the accuracy of 
+  language models.
+
+  \begin{center}
+    Why did this matter?
+  \end{center}
+  \pause
+
+  \begin{center}
+    \includegraphics<2>[width=9cm]{drumpf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Language Modeling Applications}
+
+  \begin{columns}    
+    \begin{column}{0.5\textwidth}
+  \begin{itemize}
+  \item Speech Recognition
+  \item Machine Translation
+  \item Summarization
+  \item Dialogue
+  \item Soft Keyboards
+  \item Word Correction
+  \item Text Simplification
+  \item $\ldots$
+  \end{itemize}
+  \end{column}
+
+
+    \begin{column}{0.5\textwidth}
+      \vspace{2cm}
+     
+      \includegraphics[width=5cm]{siri}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}{Next Class}
+  
+  \begin{itemize}
+  \item Easier to train variants of RNN (Long-Short Term Memory)
+  \item LSTMs for Machine Translation 
+  \item Many Cool Applications...
+  \end{itemize}
+
+\end{frame}
+
+
+
+
 
 \begin{frame}
 \begin{center}
