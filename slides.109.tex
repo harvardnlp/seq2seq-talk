@@ -228,8 +228,47 @@
 \begin{frame}
   \begin{center}
     \includegraphics[width=12cm]{nytai}
+
+    (December, 2016)
   \end{center}
 \end{frame}
+
+\begin{frame}
+  \begin{center}
+    \structure{Machine Translation}
+  \end{center}
+  \begin{center}
+    \includegraphics[width=12cm]{nmtexamples}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}
+  \begin{center}
+    \structure{Machine Translation}
+  \end{center}
+  \begin{center}
+    \includegraphics[width=12cm]{nmtexamples2}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \begin{center}
+    \structure{Other Applications: Image Captioning \Cite{Xu2015}}
+  \end{center}
+\center
+\includegraphics[width=11cm]{attn-example2}
+\end{frame}
+
+
+\begin{frame}
+  \begin{center}
+    \structure{Other Applications: Speech Recognition \Cite{Chan2015}}
+  \end{center}
+\center
+\includegraphics[width=11cm]{attn-example3}
+\end{frame}
+
 
 \begin{frame}
   \begin{center}
@@ -299,11 +338,13 @@
     THE ROOM WAS NOT VERY LIGHT A SMALL OBLONG READING LAMP ON THE
     DESK SHED GLOW ON POLISHED \_\_\_\
   \end{quote}
+  \pause
 
+  \begin{quote}
+    la habitación no era muy encender una pequeña lámpara de lectura oblonga en el resplandor caseta de escritorio en vidrio pulido
+  \end{quote}
 
 \end{frame}
-
-
 \begin{frame}
   \begin{center}
     \structure{Shannon (1948) \textit{Mathematical Model of Communication}}
@@ -525,7 +566,6 @@ Steps:
   \end{itemize}
 % \end{frame}
 
-  \pause
 % \begin{frame}{Neural Network}
 
   \[NN_{MLP1}(\boldx) =  \boldW^2 \tanh(\boldW^1 \boldx + \boldb^1) + \boldb^2\]
@@ -545,6 +585,13 @@ Steps:
 
 \end{frame}
 
+
+\begin{frame}
+    \begin{figure}
+    \centering
+    \includegraphics[width=8cm]{08-nn}
+    \end{figure}
+\end{frame}
 
 
 \begin{frame}{Word Representation}
@@ -792,8 +839,9 @@ Steps:
 
 \begin{frame}{Notable Properties}
   After applying PCA to word embeddings
+  \air 
   \begin{center}
-    \includegraphics[width=8cm]{athletes}
+    \includegraphics[width=7cm]{athletes}
   \end{center}
 \end{frame}
 
@@ -805,14 +853,19 @@ Steps:
 \end{frame}
 
 
-\begin{frame}{Using For Language Modeling}
-  Recall the definition of the softmax, with $z$ the representation 
+\begin{frame}{Language Modeling with Neural Networks}
+  Recall the definition of the \textbf{softmax}, with $z$ the representation 
   of the context.
-
-  \[ \sigma(z)_j = \frac{e^{z_j}}{\sum_{k=1}^Ke^{z_{k}}}  \] 
 
   \air
 
+
+  \begin{center}
+    \includegraphics[width=5cm]{softmax}
+  \end{center}
+\air
+
+  \[ \sigma(z)_j = \frac{e^{z_j}}{\sum_{k=1}^Ke^{z_{k}}}  \] 
   For language modeling $K$ is huge! Need to compute for the full
   vocabulary.
   \air
@@ -964,13 +1017,25 @@ Steps:
 
     \includegraphics[width=0.8\textwidth]{rnnlm5}
   \end{center}
-
+    
   \begin{itemize}
   \item Compute softmax over all possible next words to predict.
   \end{itemize}
   \[  p(w_t \given w_1, \ldots, w_{t-1}) = \sigma(\mathbf{W} \mathbf{h}_{t-1} + \mathbf{b})_w \] 
 
   % \[ p(w_{1:T} ) = \prod_{t} p(w_t | w_1, \ldots, w_{t-1}) \] 
+    % \caption{Xu et al (2015)}  
+\end{frame}
+
+
+\begin{frame}
+  % \begin{frame}
+  \begin{center}
+    \includegraphics[width=\textwidth]{lstm1}
+
+
+    {\footnotesize (Karpathy et al, 2015)}
+  \end{center}
     % \caption{Xu et al (2015)}  
 \end{frame}
 
@@ -1013,6 +1078,7 @@ Steps:
     \end{center}
 \end{frame}
 
+
 \begin{frame}{Issues}
   \begin{itemize}
   \item Can be inefficient, but batch/GPUs help.
@@ -1044,6 +1110,8 @@ Steps:
     \includegraphics<2>[width=9cm]{drumpf}
   \end{center}
 \end{frame}
+
+
 
 \begin{frame}{Language Modeling Applications}
 
